@@ -1,14 +1,37 @@
 {
-  "name": "use-form",
-  "private": true,
+  "name": "@alfonsobries/react-use-form",
   "version": "0.0.0",
+  "description": "Form hook for React to be used with Laravel Apis",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
+    }
+  },
+  "author": "Alfonso Bribiesca <alfonso@vexilo.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alfonsobries/react-use-form"
+  },
+  "license": "MIT",
+  "private": false,
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ],
+  "sideEffects": false,
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^4.5.4",
+    "@rollup/plugin-typescript": "^8.3.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.3",
     "vite": "^2.9.0"
   }
 }

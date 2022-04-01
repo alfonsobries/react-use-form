@@ -1,0 +1,22 @@
+import path from 'path'
+import { defineConfig } from 'vite'
+import typescript from '@rollup/plugin-typescript'
+
+export default defineConfig({
+  build: {
+    minify: false,
+    sourcemap: true,
+    lib: {
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      name: '@alfonsobries/react-use-form',
+      fileName: (format) => `index.${format}.js`
+    },
+    rollupOptions: {
+      plugins: [
+        typescript({
+          "exclude": ["node_modules", 'src/__tests/**/*']
+        }),
+      ],
+    }
+  }
+})
