@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { arrayWrap } from '../utils';
+import { arrayWrap, deepCopy } from '../utils';
 
 class Errors {
   state: Record<string, string[]>;
@@ -14,7 +14,7 @@ class Errors {
     this.setState = setState;
   }
 
-  set(errorsOrField: string | Record<string, string[]>, fieldMessages?: any) {
+  set(errorsOrField: string | Record<string, string[]>, fieldMessages?: any): void {
     if (typeof errorsOrField === 'object') {
       this.setState(errorsOrField);
     } else {
@@ -22,12 +22,42 @@ class Errors {
     }
   }
 
+  get(field: string): string | undefined {
+    if (this.state[field] !== undefined) {
+      return this.state[field][0];
+    }
+
+    return undefined;
+  }
+
   has(field: string): boolean {
     return this.state[field] !== undefined;
   }
 
-  all() {
+  any(): boolean {
+    return Object.keys(this.state).length > 0;
+  }
+
+  all(): Record<string, string[]> {
     return this.state;
+  }
+
+  flatten(): string[] {
+    return Object.values(this.state).reduce(
+      (errors, fieldErrors) => [...errors, ...fieldErrors],
+      [],
+    );
+  }
+
+  clear(field?: string): void {
+    if (field === undefined) {
+      this.setState({});
+      return;
+    }
+
+    const newState = deepCopy(this.state);
+    delete newState[field];
+    this.setState(newState);
   }
 }
 

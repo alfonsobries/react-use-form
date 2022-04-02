@@ -114,6 +114,26 @@ describe('useForm', () => {
       });
     });
 
+    it('can get first error for a single field', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      expect(result.current.errors.get('email')).toBe('Email is not valid');
+    });
+
+    it('gets undefined if no error for a single field', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      expect(result.current.errors.get('address')).toBeUndefined();
+    });
+
     it('can determine if a field has an error', () => {
       const { result } = renderHook(() => useForm(data));
 
@@ -123,6 +143,80 @@ describe('useForm', () => {
 
       expect(result.current.errors.has('email')).toBe(true);
       expect(result.current.errors.has('address')).toBe(false);
+    });
+
+    it('can determine if has any error', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      expect(result.current.errors.any()).toBe(false);
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      expect(result.current.errors.any()).toBe(true);
+    });
+
+    it('can get all the errors', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      expect(result.current.errors.any()).toBe(false);
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      expect(result.current.errors.all()).toEqual(errors);
+    });
+
+    it('can get all the errors in a flat array', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      expect(result.current.errors.any()).toBe(false);
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      expect(result.current.errors.flatten()).toEqual([
+        'Name is required',
+        'Email is not valid',
+        'Email is required',
+      ]);
+    });
+
+    it('can clear all the errors', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      expect(result.current.errors.any()).toBe(false);
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      act(() => {
+        result.current.errors.clear();
+      });
+
+      expect(result.current.errors.all()).toEqual({});
+    });
+
+    it('can clear a single error', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      expect(result.current.errors.any()).toBe(false);
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      act(() => {
+        result.current.errors.clear('email');
+      });
+
+      expect(result.current.errors.all()).toEqual({
+        name: ['Name is required'],
+      });
     });
   });
 });
