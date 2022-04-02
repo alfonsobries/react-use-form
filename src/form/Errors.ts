@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { arrayWrap, deepCopy } from '../utils';
+import { arrayWrap } from '../utils';
 
 class Errors {
   state: Record<string, string[]>;
@@ -55,7 +55,7 @@ class Errors {
       return;
     }
 
-    const newState = deepCopy(this.state);
+    const newState = { ...this.state };
     delete newState[field];
     this.setState(newState);
   }
