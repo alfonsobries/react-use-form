@@ -30,6 +30,33 @@ describe('useForm', () => {
     expect(form.data()).toEqual(data);
   });
 
+  it('should get the form data for a complex object', () => {
+    const complexData = {
+      user: {
+        name: 'Alfonso',
+        email: 'alfonso@vexilo.com',
+      },
+      tags: ['javascript', 'typescript'],
+      posts: [
+        {
+          title: 'Hello world',
+          content: 'This is my first post',
+        },
+        {
+          title: 'Hello world 2',
+          content: 'This is my second post',
+        },
+      ],
+      active: true,
+    };
+
+    const {
+      result: { current: form },
+    } = renderHook(() => useForm(complexData));
+
+    expect(form.data()).toEqual(complexData);
+  });
+
   it('updates the value of a property', () => {
     const { result } = renderHook(() => useForm(data));
 
@@ -106,6 +133,23 @@ describe('useForm', () => {
 
       act(() => {
         result.current.errors.set('password', 'Password is required');
+      });
+
+      expect(result.current.errors.all()).toEqual({
+        ...errors,
+        password: ['Password is required'],
+      });
+    });
+
+    it('can set a single error as an array', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      act(() => {
+        result.current.errors.set('password', ['Password is required']);
       });
 
       expect(result.current.errors.all()).toEqual({
