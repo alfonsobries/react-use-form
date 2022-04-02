@@ -1,50 +1,22 @@
 // import { useCallback, useState } from 'react';
 
-import { useCallback, useReducer } from 'react';
+import { useState } from 'react';
 
-function reducer(state, { type, payload }) {
-  switch (type) {
-    case 'set':
-      return { ...state, ...payload };
-    default:
-      throw new Error();
-  }
-}
+import Form from '../form/Form';
 
 export const useForm = (data: Record<string, unknown>) => {
-  const [state, dispatch] = useReducer(reducer, data);
+  const dataState = useState(data);
+  const errorsState = useState({});
+  const form = new Form(dataState, errorsState);
 
-  const [errorsState, errorsDispatch] = useReducer(reducer, {});
-
-  const set = useCallback(
-    (prop: string, value: any) => {
-      dispatch({
-        type: 'set',
-        payload: {
-          [prop]: value,
-        },
-      });
-
-      return value;
-    },
-    [dispatch],
-  );
-
-  const errors = new Proxy(errorsState, {
-    get(target, prop) {},
-  });
-
-  return new Proxy(state, {
-    get(state, attribute: string) {
-      if (attribute === 'set') {
-        return set;
+  // eslint-disable-next-line no-undef
+  return new Proxy(form, {
+    get(form: Form, attribute: string) {
+      if (form.keys().includes(attribute)) {
+        return form.get(attribute);
       }
 
-      if (attribute === 'errors') {
-        return errors;
-      }
-
-      return state[attribute];
+      return form[attribute];
     },
   });
 };
