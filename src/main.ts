@@ -1,3 +1,3 @@
-import { useForm } from './useForm'
+import { useForm } from './hooks/useForm'
 
 export { useForm }
