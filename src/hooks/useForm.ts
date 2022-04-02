@@ -13,7 +13,7 @@ export const useForm = (data: Record<string, unknown>) => {
   return new Proxy(form, {
     get(form: Form, attribute: string) {
       if (form.keys().includes(attribute)) {
-        return form.get(attribute);
+        return form.getField(attribute);
       }
 
       return form[attribute];

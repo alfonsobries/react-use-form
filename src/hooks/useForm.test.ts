@@ -1,5 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { describe, expect, it } from 'vitest';
+import axios from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import Errors from '../form/Errors';
 import { useForm } from './useForm';
@@ -262,5 +264,77 @@ describe('useForm', () => {
         name: ['Name is required'],
       });
     });
+  });
+
+  describe('Form requests', () => {
+    const users = [
+      {
+        id: 1,
+        name: 'Saida',
+        email: 'saida@gmail.com',
+      },
+      {
+        id: 2,
+        name: 'Alfonso',
+        email: 'alfonso@vexilo.com',
+      },
+    ];
+    const apiBase = 'https://api.test/users';
+
+    // This sets the mock adapter on the default instance
+    const mock = new MockAdapter(axios);
+
+    afterEach(() => mock.resetHandlers());
+
+    it('can make a GET request', async () => {
+      mock.onGet(apiBase).reply(200, users);
+
+      const {
+        result: { current: form },
+      } = renderHook(() => useForm(data));
+
+      const response = await form.submit('GET', apiBase);
+
+      expect(response.data).toEqual(users);
+    });
+
+    it('can make a POST request', async () => {
+      mock.onPost(apiBase).reply((config) => {
+        return [200, JSON.parse(config.data)];
+      });
+
+      const {
+        result: { current: form },
+      } = renderHook(() => useForm(data));
+
+      const response = await form.submit('POST', apiBase);
+
+      expect(response.data).toEqual(data);
+    });
+
+    it.each(['get', 'post', 'put', 'patch', 'delete'])(
+      "can make a request with method '%s'",
+      async (method) => {
+        mock.onAny(apiBase).reply((config) => {
+          return [
+            200,
+            {
+              method,
+              data: method === 'get' ? config.params : JSON.parse(config.data),
+            },
+          ];
+        });
+
+        const {
+          result: { current: form },
+        } = renderHook(() => useForm(data));
+
+        const response = await form[method](apiBase);
+
+        expect(response.data.method).toEqual(method);
+
+        expect(response.data.data).toEqual(data);
+      },
+    );
   });
 });
