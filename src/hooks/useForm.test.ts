@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { describe, expect, it } from 'vitest';
 
+import Errors from '../form/Errors';
 import { useForm } from './useForm';
 
 describe('useForm', () => {
@@ -42,32 +43,43 @@ describe('useForm', () => {
 
   it('fills the form data', () => {
     const { result } = renderHook(() => useForm(data));
+    const dataToFill = {
+      name: 'Saida',
+      email: 'saida@gmail.com',
+    };
 
     act(() => {
-      result.current.fill({
-        name: 'Saida',
-        email: 'saida@gmail.com',
-      });
+      result.current.fill(dataToFill);
     });
 
-    expect(result.current.name).toBe('Saida');
-    expect(result.current.email).toBe('saida@gmail.com');
-    expect(result.current.password).toBe('secret');
-    expect(result.current.remember).toBe(true);
+    expect(result.current.data()).toEqual({
+      ...data,
+      ...dataToFill,
+    });
   });
 
   it('reset the form data', () => {
-    const { result } = renderHook(() => useForm(data));
+    const {
+      result: { current: form },
+    } = renderHook(() => useForm(data));
 
     act(() => {
-      result.current.fill({
+      form.fill({
         name: 'Saida',
         email: 'saida@gmail.com',
       });
 
-      result.current.reset();
+      form.reset();
     });
 
-    expect(result.current.data()).toEqual(data);
+    expect(form.data()).toEqual(data);
+  });
+
+  it('has errors', () => {
+    const {
+      result: { current: form },
+    } = renderHook(() => useForm(data));
+
+    expect(form.errors).toBeInstanceOf(Errors);
   });
 });

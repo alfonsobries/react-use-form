@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { deepCopy } from '../utils';
+import Errors from './Errors';
 
 class Form {
   // eslint-disable-next-line no-undef
@@ -12,10 +13,8 @@ class Form {
     Record<string, unknown>,
     React.Dispatch<React.SetStateAction<Record<string, unknown>>>,
   ];
-  errorsState: [
-    Record<string, unknown>,
-    React.Dispatch<React.SetStateAction<Record<string, unknown>>>,
-  ];
+
+  errors: Errors;
 
   constructor(
     dataState: [
@@ -28,7 +27,7 @@ class Form {
     ],
   ) {
     this.dataState = dataState;
-    this.errorsState = errorsState;
+    this.errors = new Errors(errorsState);
     this.originalData = deepCopy(dataState[0]);
   }
 
