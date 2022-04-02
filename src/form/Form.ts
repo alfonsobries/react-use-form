@@ -22,8 +22,8 @@ class Form {
       React.Dispatch<React.SetStateAction<Record<string, unknown>>>,
     ],
     errorsState: [
-      Record<string, unknown>,
-      React.Dispatch<React.SetStateAction<Record<string, unknown>>>,
+      Record<string, string[]>,
+      React.Dispatch<React.SetStateAction<Record<string, string[]>>>,
     ],
   ) {
     this.dataState = dataState;
@@ -36,7 +36,6 @@ class Form {
   }
 
   set(key: string, value: any): void {
-    console.log({ ...this.dataState[0], [key]: value });
     this.dataState[1]({ ...this.dataState[0], [key]: value });
   }
 

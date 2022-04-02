@@ -59,20 +59,18 @@ describe('useForm', () => {
   });
 
   it('reset the form data', () => {
-    const {
-      result: { current: form },
-    } = renderHook(() => useForm(data));
+    const { result } = renderHook(() => useForm(data));
 
     act(() => {
-      form.fill({
+      result.current.fill({
         name: 'Saida',
         email: 'saida@gmail.com',
       });
 
-      form.reset();
+      result.current.reset();
     });
 
-    expect(form.data()).toEqual(data);
+    expect(result.current.data()).toEqual(data);
   });
 
   it('has errors', () => {
@@ -81,5 +79,50 @@ describe('useForm', () => {
     } = renderHook(() => useForm(data));
 
     expect(form.errors).toBeInstanceOf(Errors);
+  });
+
+  describe('Errors', () => {
+    const errors = {
+      name: ['Name is required'],
+      email: ['Email is not valid', 'Email is required'],
+    };
+
+    it('can set errors', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      expect(result.current.errors.all()).toEqual(errors);
+    });
+
+    it('can set a single error', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      act(() => {
+        result.current.errors.set('password', 'Password is required');
+      });
+
+      expect(result.current.errors.all()).toEqual({
+        ...errors,
+        password: ['Password is required'],
+      });
+    });
+
+    it('can determine if a field has an error', () => {
+      const { result } = renderHook(() => useForm(data));
+
+      act(() => {
+        result.current.errors.set(errors);
+      });
+
+      expect(result.current.errors.has('email')).toBe(true);
+      expect(result.current.errors.has('address')).toBe(false);
+    });
   });
 });
