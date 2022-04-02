@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import Errors from '../form/Errors';
 import { useForm } from './useForm';
@@ -312,6 +312,48 @@ describe('useForm', () => {
       expect(response.data).toEqual(data);
     });
 
+    it('can make a get request and add custom params', async () => {
+      mock.onGet(apiBase).reply((config) => {
+        return [200, config.params];
+      });
+
+      const {
+        result: { current: form },
+      } = renderHook(() => useForm(data));
+
+      const response = await form.submit('get', apiBase, {
+        params: {
+          foo: 'bar',
+        },
+      });
+
+      expect(response.data).toEqual({
+        ...data,
+        foo: 'bar',
+      });
+    });
+
+    it('can make a post request and add custom data', async () => {
+      mock.onPost(apiBase).reply((config) => {
+        return [200, JSON.parse(config.data)];
+      });
+
+      const {
+        result: { current: form },
+      } = renderHook(() => useForm(data));
+
+      const response = await form.submit('POST', apiBase, {
+        data: {
+          foo: 'bar',
+        },
+      });
+
+      expect(response.data).toEqual({
+        ...data,
+        foo: 'bar',
+      });
+    });
+
     it.each(['get', 'post', 'put', 'patch', 'delete'])(
       "can make a request with method '%s'",
       async (method) => {
@@ -336,5 +378,45 @@ describe('useForm', () => {
         expect(response.data.data).toEqual(data);
       },
     );
+
+    it('stores errors from the server', async () => {
+      mock.onPost(apiBase).reply(422, {
+        name: ['Value is required'],
+      });
+
+      const { result } = renderHook(() => useForm(data));
+
+      try {
+        await result.current.post(apiBase);
+      } catch (e) {
+        // do nothing
+      }
+
+      expect(result.current.errors.any()).toBeTruthy();
+      expect(result.current.busy).toBeFalsy();
+      expect(result.current.successful).toBeFalsy();
+      expect(result.current.recentlySuccessful).toBeFalsy();
+    });
+
+    it('transform data object to FormData', async () => {
+      const dataWithObject = {
+        ...data,
+        photo: new File([new Uint8Array(10)], 'photo.jpg', { type: 'image/png' }),
+      };
+
+      const {
+        result: { current: form },
+      } = renderHook(() => useForm(dataWithObject));
+
+      mock.onPut(apiBase).reply((config) => {
+        expect(config.data).toBeInstanceOf(FormData);
+        expect(config.data.has('photo')).toBeTruthy();
+        expect(config.data.has('name')).toBeTruthy();
+
+        return [200, {}];
+      });
+
+      await form.submit('put', apiBase);
+    });
   });
 });

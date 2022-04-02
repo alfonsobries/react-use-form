@@ -161,9 +161,9 @@ class Form {
     } else {
       config.data = { ...this.data(), ...config.data };
 
-      // if (hasFiles(config.data) && !config.transformRequest) {
-      //   config.transformRequest = [data => serialize(data)]
-      // }
+      if (hasFiles(config.data) && !config.transformRequest) {
+        config.transformRequest = [(data) => this.toFormData(data)];
+      }
     }
 
     return new Promise((resolve, reject) => {
@@ -220,6 +220,22 @@ class Form {
       loaded: event.loaded,
       percentage: Math.round((event.loaded * 100) / event.total),
     };
+  }
+
+  toFormData(data: Record<string, string | Blob>) {
+    const formData = new FormData();
+
+    Object.keys(data).forEach((key) => {
+      const value = data[key];
+
+      if (value instanceof FileList) {
+        [].slice.call(value).forEach((file) => formData.append(key, file));
+      } else {
+        formData.append(key, value);
+      }
+    });
+
+    return formData;
   }
 }
 
