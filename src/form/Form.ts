@@ -197,7 +197,7 @@ class Form {
    */
   extractErrors(response: AxiosResponse): Record<string, any> {
     if (!response.data || typeof response.data !== 'object') {
-      return { error: Form.errorMessage };
+      return { error: [Form.errorMessage] };
     }
 
     if (response.data.errors) {
@@ -205,7 +205,7 @@ class Form {
     }
 
     if (response.data.message) {
-      return { error: response.data.message };
+      return { error: [response.data.message] };
     }
 
     return { ...response.data };

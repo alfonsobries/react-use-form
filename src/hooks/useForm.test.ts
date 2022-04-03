@@ -4,6 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import Errors from '../form/Errors';
+import Form from '../form/Form';
 import { useForm } from './useForm';
 
 describe('useForm', () => {
@@ -379,23 +380,82 @@ describe('useForm', () => {
       },
     );
 
-    it('stores errors from the server', async () => {
-      mock.onPost(apiBase).reply(422, {
-        name: ['Value is required'],
+    describe('Request errors', () => {
+      it('stores errors from the server', async () => {
+        mock.onPost(apiBase).reply(422, {
+          name: ['Value is required'],
+        });
+
+        const { result } = renderHook(() => useForm(data));
+
+        try {
+          await result.current.post(apiBase);
+        } catch (e) {
+          // do nothing
+        }
+
+        expect(result.current.errors.any()).toBeTruthy();
+        expect(result.current.busy).toBeFalsy();
+        expect(result.current.successful).toBeFalsy();
+        expect(result.current.recentlySuccessful).toBeFalsy();
       });
 
-      const { result } = renderHook(() => useForm(data));
+      it('stores errors from the server if they come in the `errors` property', async () => {
+        mock.onPost(apiBase).reply(422, {
+          errors: {
+            name: ['Value is required'],
+          },
+        });
 
-      try {
-        await result.current.post(apiBase);
-      } catch (e) {
-        // do nothing
-      }
+        const { result } = renderHook(() => useForm(data));
 
-      expect(result.current.errors.any()).toBeTruthy();
-      expect(result.current.busy).toBeFalsy();
-      expect(result.current.successful).toBeFalsy();
-      expect(result.current.recentlySuccessful).toBeFalsy();
+        try {
+          await result.current.post(apiBase);
+        } catch (e) {
+          // do nothing
+        }
+
+        expect(result.current.errors.any()).toBeTruthy();
+        expect(result.current.busy).toBeFalsy();
+        expect(result.current.successful).toBeFalsy();
+        expect(result.current.recentlySuccessful).toBeFalsy();
+      });
+
+      it('stores a default error if response doesnt have data', async () => {
+        mock.onPost(apiBase).reply(422);
+
+        const { result } = renderHook(() => useForm(data));
+
+        try {
+          await result.current.post(apiBase);
+        } catch (e) {
+          // do nothing
+        }
+
+        expect(result.current.errors.get('error')).toBe(Form.errorMessage);
+        expect(result.current.busy).toBeFalsy();
+        expect(result.current.successful).toBeFalsy();
+        expect(result.current.recentlySuccessful).toBeFalsy();
+      });
+
+      it('stores a error message is set', async () => {
+        mock.onPost(apiBase).reply(422, {
+          message: 'Oops!',
+        });
+
+        const { result } = renderHook(() => useForm(data));
+
+        try {
+          await result.current.post(apiBase);
+        } catch (e) {
+          // do nothing
+        }
+
+        expect(result.current.errors.get('error')).toBe('Oops!');
+        expect(result.current.busy).toBeFalsy();
+        expect(result.current.successful).toBeFalsy();
+        expect(result.current.recentlySuccessful).toBeFalsy();
+      });
     });
 
     it('transform data object to FormData', async () => {
