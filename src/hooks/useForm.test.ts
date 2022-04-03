@@ -418,7 +418,6 @@ describe('useForm', () => {
         expect(result.current.errors.any()).toBeTruthy();
         expect(result.current.busy).toBeFalsy();
         expect(result.current.successful).toBeFalsy();
-        expect(result.current.recentlySuccessful).toBeFalsy();
       });
 
       it('stores errors from the server if they come in the `errors` property', async () => {
@@ -439,7 +438,6 @@ describe('useForm', () => {
         expect(result.current.errors.any()).toBeTruthy();
         expect(result.current.busy).toBeFalsy();
         expect(result.current.successful).toBeFalsy();
-        expect(result.current.recentlySuccessful).toBeFalsy();
       });
 
       it('stores a default error if response doesnt have data', async () => {
@@ -456,7 +454,6 @@ describe('useForm', () => {
         expect(result.current.errors.get('error')).toBe(Form.errorMessage);
         expect(result.current.busy).toBeFalsy();
         expect(result.current.successful).toBeFalsy();
-        expect(result.current.recentlySuccessful).toBeFalsy();
       });
 
       it('stores a error message is set', async () => {
@@ -475,7 +472,6 @@ describe('useForm', () => {
         expect(result.current.errors.get('error')).toBe('Oops!');
         expect(result.current.busy).toBeFalsy();
         expect(result.current.successful).toBeFalsy();
-        expect(result.current.recentlySuccessful).toBeFalsy();
       });
     });
 

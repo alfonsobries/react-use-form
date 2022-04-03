@@ -8,7 +8,6 @@ export const useForm = (data: Record<string, unknown>) => {
     busy: false,
     successful: false,
     progress: undefined,
-    recentlySuccessful: false,
   });
 
   const errorsState = useState({});
@@ -21,7 +20,7 @@ export const useForm = (data: Record<string, unknown>) => {
         return form.getField(attribute);
       }
 
-      if (['progress', 'busy', 'successful', 'recentlySuccessful'].includes(attribute)) {
+      if (['progress', 'busy', 'successful'].includes(attribute)) {
         return form.formState[0][attribute];
       }
 

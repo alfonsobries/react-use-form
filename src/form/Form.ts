@@ -14,7 +14,6 @@ export interface FormState {
   busy: boolean;
   successful: boolean;
   progress: Progress | undefined;
-  recentlySuccessful: boolean;
 }
 export interface Progress {
   total: number;
@@ -33,7 +32,6 @@ class Form {
 
   static axios: AxiosInstance;
   static errorMessage = 'Something went wrong. Please try again.';
-  static recentlySuccessfulTimeout = 2000;
 
   constructor(
     formState: [FormState, React.Dispatch<React.SetStateAction<FormState>>],
@@ -98,10 +96,7 @@ class Form {
       busy: true,
       successful: false,
       progress: undefined,
-      recentlySuccessful: false,
     });
-
-    clearTimeout(this.recentlySuccessfulTimeoutId);
   }
 
   /**
@@ -113,12 +108,7 @@ class Form {
       busy: false,
       successful: true,
       progress: undefined,
-      recentlySuccessful: true,
     });
-
-    this.recentlySuccessfulTimeoutId = setTimeout(() => {
-      this.recentlySuccessful = false;
-    }, Form.recentlySuccessfulTimeout);
   }
 
   /**
