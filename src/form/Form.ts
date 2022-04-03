@@ -9,58 +9,71 @@ import React from 'react';
 import { deepCopy, hasFiles } from '../utils';
 import Errors from './Errors';
 
+export interface FormState {
+  data: Record<string, any>;
+  busy: boolean;
+  successful: boolean;
+  progress: Progress | undefined;
+  recentlySuccessful: boolean;
+}
+export interface Progress {
+  total: number;
+  loaded: number;
+  percentage: number;
+}
 class Form {
   // eslint-disable-next-line no-undef
   [key: string]: any;
 
   originalData: Record<string, any> = {};
 
-  dataState: [
-    Record<string, unknown>,
-    React.Dispatch<React.SetStateAction<Record<string, unknown>>>,
-  ];
+  formState: [FormState, React.Dispatch<React.SetStateAction<FormState>>];
 
   errors: Errors;
-
-  busy: boolean = false;
-
-  successful: boolean = false;
 
   static axios: AxiosInstance;
   static errorMessage = 'Something went wrong. Please try again.';
   static recentlySuccessfulTimeout = 2000;
-  // progress: boolean = false;
-  // recentlySuccessful: boolean = false;
 
   constructor(
-    dataState: [
-      Record<string, unknown>,
-      React.Dispatch<React.SetStateAction<Record<string, unknown>>>,
-    ],
+    formState: [FormState, React.Dispatch<React.SetStateAction<FormState>>],
     errorsState: [
       Record<string, string[]>,
       React.Dispatch<React.SetStateAction<Record<string, string[]>>>,
     ],
   ) {
-    this.dataState = dataState;
+    this.formState = formState;
     this.errors = new Errors(errorsState);
-    this.originalData = deepCopy(dataState[0]);
+    this.originalData = deepCopy(formState[0].data);
+  }
+
+  setState(field: string, value: any) {
+    this.formState[1]({
+      ...this.formState[0],
+      [field]: value,
+    });
   }
 
   getField(key: string): any {
-    return this.dataState[0][key];
+    return this.formState[0]['data'][key];
   }
 
   set(key: string, value: any): void {
-    this.dataState[1]({ ...this.dataState[0], [key]: value });
+    this.setState('data', {
+      ...this.formState[0]['data'],
+      [key]: value,
+    });
   }
 
   keys(): string[] {
-    return Object.keys(this.dataState[0]);
+    return Object.keys(this.formState[0].data);
   }
 
   fill(data: Record<string, any> = {}) {
-    this.dataState[1]({ ...this.dataState[0], ...data });
+    this.setState('data', {
+      ...this.formState[0]['data'],
+      ...data,
+    });
   }
 
   data(): Record<string, any> {
@@ -71,7 +84,7 @@ class Form {
   }
 
   reset(): void {
-    this.dataState[1](this.originalData);
+    this.setState('data', this.originalData);
   }
 
   /**
@@ -79,24 +92,33 @@ class Form {
    */
   startProcessing() {
     this.errors.clear();
-    this.busy = true;
-    this.successful = false;
-    // this.progress = undefined;
-    // this.recentlySuccessful = false;
-    // clearTimeout(this.recentlySuccessfulTimeoutId);
+
+    this.formState[1]({
+      ...this.formState[0],
+      busy: true,
+      successful: false,
+      progress: undefined,
+      recentlySuccessful: false,
+    });
+
+    clearTimeout(this.recentlySuccessfulTimeoutId);
   }
 
   /**
    * Finish processing the form.
    */
   finishProcessing() {
-    this.busy = false;
-    this.successful = true;
-    this.progress = undefined;
-    // this.recentlySuccessful = true;
-    // this.recentlySuccessfulTimeoutId = setTimeout(() => {
-    //   this.recentlySuccessful = false;
-    // }, Form.recentlySuccessfulTimeout);
+    this.formState[1]({
+      ...this.formState[0],
+      busy: false,
+      successful: true,
+      progress: undefined,
+      recentlySuccessful: true,
+    });
+
+    this.recentlySuccessfulTimeoutId = setTimeout(() => {
+      this.recentlySuccessful = false;
+    }, Form.recentlySuccessfulTimeout);
   }
 
   /**
@@ -180,21 +202,15 @@ class Form {
     });
   }
 
-  /**
-   * Handle the errors.
-   */
   handleErrors(error: AxiosError) {
-    this.busy = false;
-    this.progress = undefined;
+    this.setState('busy', false);
+    this.setState('progress', undefined);
 
     if (error.response) {
       this.errors.set(this.extractErrors(error.response));
     }
   }
 
-  /**
-   * Extract the errors from the response object.
-   */
   extractErrors(response: AxiosResponse): Record<string, any> {
     if (!response.data || typeof response.data !== 'object') {
       return { error: [Form.errorMessage] };
@@ -211,15 +227,12 @@ class Form {
     return { ...response.data };
   }
 
-  /**
-   * Handle the upload progress.
-   */
   handleUploadProgress(event: ProgressEvent) {
-    this.progress = {
+    this.setState('progress', {
       total: event.total,
       loaded: event.loaded,
       percentage: Math.round((event.loaded * 100) / event.total),
-    };
+    });
   }
 
   toFormData(data: Record<string, string | Blob>) {

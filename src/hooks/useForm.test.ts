@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, spyOn } from 'vitest';
 
 import Errors from '../form/Errors';
 import Form from '../form/Form';
@@ -380,6 +380,27 @@ describe('useForm', () => {
       },
     );
 
+    it('transform data object to FormData', async () => {
+      const dataWithObject = {
+        ...data,
+        photo: new File([new Uint8Array(10)], 'photo.jpg', { type: 'image/png' }),
+      };
+
+      const {
+        result: { current: form },
+      } = renderHook(() => useForm(dataWithObject));
+
+      mock.onPut(apiBase).reply((config) => {
+        expect(config.data).toBeInstanceOf(FormData);
+        expect(config.data.has('photo')).toBeTruthy();
+        expect(config.data.has('name')).toBeTruthy();
+
+        return [200, {}];
+      });
+
+      await form.submit('put', apiBase);
+    });
+
     describe('Request errors', () => {
       it('stores errors from the server', async () => {
         mock.onPost(apiBase).reply(422, {
@@ -458,25 +479,55 @@ describe('useForm', () => {
       });
     });
 
-    it('transform data object to FormData', async () => {
-      const dataWithObject = {
-        ...data,
-        photo: new File([new Uint8Array(10)], 'photo.jpg', { type: 'image/png' }),
-      };
+    describe('Form progress', () => {
+      it('handle upload progress', async () => {
+        mock.onPost(apiBase).reply((config) => {
+          const total = 1024; // mocked file size
+          const progress = 0.4;
+          if (config.onUploadProgress) {
+            config.onUploadProgress({ loaded: total * progress, total });
+          }
+          return [200, null];
+        });
 
-      const {
-        result: { current: form },
-      } = renderHook(() => useForm(dataWithObject));
+        const { result } = renderHook(() => useForm(data));
 
-      mock.onPut(apiBase).reply((config) => {
-        expect(config.data).toBeInstanceOf(FormData);
-        expect(config.data.has('photo')).toBeTruthy();
-        expect(config.data.has('name')).toBeTruthy();
+        const handleUploadProgressSpy = spyOn(result.current, 'handleUploadProgress');
 
-        return [200, {}];
+        await result.current.submit('POST', apiBase);
+
+        expect(handleUploadProgressSpy).toHaveBeenCalledWith({
+          loaded: 409.6,
+          total: 1024,
+        });
+
+        handleUploadProgressSpy.mockRestore();
       });
 
-      await form.submit('put', apiBase);
+      it('stores upload progress', async () => {
+        mock.onPost(apiBase).reply(async (config) => {
+          const total = 1024; // mocked file size
+          const progress = 0.4;
+
+          if (config.onUploadProgress) {
+            config.onUploadProgress({ loaded: total * progress, total });
+          }
+
+          expect(result.current.progress).toEqual({
+            total: 1024,
+            loaded: 409.6,
+            percentage: Math.round((409.6 * 100) / 1024),
+          });
+
+          return [200, null];
+        });
+
+        const { result } = renderHook(() => useForm(data));
+
+        await result.current.submit('POST', apiBase);
+
+        expect(result.current.progress).toBeUndefined();
+      });
     });
   });
 });
