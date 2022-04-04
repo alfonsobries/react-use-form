@@ -9,8 +9,8 @@ import React from 'react';
 import { deepCopy, hasFiles } from '../utils';
 import Errors from './Errors';
 
-export interface FormState {
-  data: Record<string, any>;
+export interface FormState<Data extends Record<string, any>> {
+  data: Data;
   busy: boolean;
   successful: boolean;
   progress: Progress | undefined;
@@ -20,21 +20,21 @@ export interface Progress {
   loaded: number;
   percentage: number;
 }
-class Form {
-  // eslint-disable-next-line no-undef
-  [key: string]: any;
+class Form<Data extends Record<string, any>> {
+  Data;
 
-  originalData: Record<string, any> = {};
+  originalData: Data;
 
-  formState: [FormState, React.Dispatch<React.SetStateAction<FormState>>];
+  formState: [FormState<Data>, React.Dispatch<React.SetStateAction<FormState<Data>>>];
 
   errors: Errors;
 
   static axios: AxiosInstance;
+
   static errorMessage = 'Something went wrong. Please try again.';
 
   constructor(
-    formState: [FormState, React.Dispatch<React.SetStateAction<FormState>>],
+    formState: [FormState<Data>, React.Dispatch<React.SetStateAction<FormState<Data>>>],
     errorsState: [
       Record<string, string[]>,
       React.Dispatch<React.SetStateAction<Record<string, string[]>>>,
@@ -42,7 +42,7 @@ class Form {
   ) {
     this.formState = formState;
     this.errors = new Errors(errorsState);
-    this.originalData = deepCopy(formState[0].data);
+    this.originalData = deepCopy<Data>(formState[0].data);
   }
 
   setState(field: string, value: any) {
@@ -67,18 +67,18 @@ class Form {
     return Object.keys(this.formState[0].data);
   }
 
-  fill(data: Record<string, any> = {}) {
+  fill(data: Data = {} as Data) {
     this.setState('data', {
       ...this.formState[0]['data'],
       ...data,
     });
   }
 
-  data(): Record<string, any> {
+  data(): Data {
     return this.keys().reduce(
       (data, key) => ({ ...data, [key]: this.getField(key) }),
       {},
-    );
+    ) as Data;
   }
 
   reset(): void {

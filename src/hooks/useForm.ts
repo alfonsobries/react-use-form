@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import Form, { FormState } from '../form/Form';
 
-export const useForm = (data: Record<string, unknown>) => {
-  const formState = useState<FormState>({
+export const useForm = <Data extends Record<string, any>>(data: Data): Form<Data> => {
+  const formState = useState<FormState<Data>>({
     data,
     busy: false,
     successful: false,
@@ -15,7 +15,7 @@ export const useForm = (data: Record<string, unknown>) => {
 
   // eslint-disable-next-line no-undef
   return new Proxy(form, {
-    get(form: Form, attribute: string) {
+    get(form: Form<Data>, attribute: string) {
       if (form.keys().includes(attribute)) {
         return form.getField(attribute);
       }
