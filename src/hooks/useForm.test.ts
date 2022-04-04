@@ -1,10 +1,8 @@
-import { render } from '@testing-library/react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { afterEach, describe, expect, it, spyOn, vi } from 'vitest';
 
-import { Provider } from '../context/FormContext';
 import Errors from '../form/Errors';
 import Form from '../form/Form';
 import { useForm } from './useForm';
