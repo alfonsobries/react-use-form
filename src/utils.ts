@@ -29,7 +29,7 @@ export function hasFiles(data: File | Blob | FileList | Record<string, any>): bo
   return (
     data instanceof File ||
     data instanceof Blob ||
-    data instanceof FileList ||
+    (typeof FileList !== 'undefined' && data instanceof FileList) ||
     (typeof data === 'object' &&
       data !== null &&
       Object.values(data).find((value) => hasFiles(value)) !== undefined)

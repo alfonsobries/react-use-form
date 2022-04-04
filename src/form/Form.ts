@@ -230,7 +230,7 @@ class Form<Data extends Record<string, any>> {
     Object.keys(data).forEach((key) => {
       const value = data[key];
 
-      if (value instanceof FileList) {
+      if (typeof FileList !== 'undefined' && value instanceof FileList) {
         [].slice.call(value).forEach((file) => formData.append(key, file));
       } else {
         formData.append(key, value);
