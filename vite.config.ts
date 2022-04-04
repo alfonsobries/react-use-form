@@ -17,6 +17,14 @@ export default defineConfig({
       fileName: (format) => `index.${format}.js`,
     },
     rollupOptions: {
+      external: ['react', 'react-dom', 'axios'],
+      output: {
+        globals: {
+          axios: 'axios',
+          react: 'React',
+          'react-dom': 'ReactDOM',
+        },
+      },
       plugins: [
         typescript({
           exclude: ['node_modules'],
