@@ -1,20 +1,21 @@
-name: CI
-on: pull_request
+name: Run tests
+on: push
 jobs:
   tests:
-    runs-on: ubuntu-latest
     steps:
-      # Checkout the Repo
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      # Install Node 12
-      - name: Setup Node
-        uses: actions/setup-node@v1
+      - name: Run the action
+        uses: ./
         with:
-          node-version: 12
+          version: 4.11.1
+          dest: ~/test/pnpm
 
-      # Install dependencies
-      - run: npm install
+      - name: 'Test: which'
+        run: which pnpm && which pnpx
+
+      - name: 'Test: install'
+        run: pnpm install
 
       # Run tests
-      - run: npm test
+      - run: pnpm test coverage
