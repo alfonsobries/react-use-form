@@ -45,10 +45,10 @@ class Form<Data extends Record<string, any>> {
   }
 
   setState(field: string, value: any) {
-    this.formState[1]({
-      ...this.formState[0],
+    this.formState[1]((state) => ({
+      ...state,
       [field]: value,
-    });
+    }));
   }
 
   getField(key: string): any {
@@ -90,24 +90,24 @@ class Form<Data extends Record<string, any>> {
   startProcessing() {
     this.errors.clear();
 
-    this.formState[1]({
-      ...this.formState[0],
+    this.formState[1]((state) => ({
+      ...state,
       busy: true,
       successful: false,
       progress: undefined,
-    });
+    }));
   }
 
   /**
    * Finish processing the form.
    */
   finishProcessing() {
-    this.formState[1]({
-      ...this.formState[0],
+    this.formState[1]((state) => ({
+      ...state,
       busy: false,
       successful: true,
       progress: undefined,
-    });
+    }));
   }
 
   /**
@@ -196,11 +196,11 @@ class Form<Data extends Record<string, any>> {
       this.errors.set(this.extractErrors(error.response));
     }
 
-    this.formState[1]({
-      ...this.formState[0],
+    this.formState[1]((state) => ({
+      ...state,
       busy: false,
       progress: undefined,
-    });
+    }));
   }
 
   extractErrors(response: AxiosResponse): Record<string, any> {

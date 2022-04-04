@@ -14,11 +14,14 @@ class Errors {
     this.setState = setState;
   }
 
-  set(errorsOrField: string | Record<string, string[]>, fieldMessages?: any): void {
+  set(errorsOrField: string | Record<string, string[]>, fieldMessages?: any) {
     if (typeof errorsOrField === 'object') {
-      this.setState(errorsOrField);
+      this.setState(() => errorsOrField);
     } else {
-      this.setState({ ...this.state, [errorsOrField]: arrayWrap(fieldMessages) });
+      this.setState((state) => ({
+        ...state,
+        [errorsOrField]: arrayWrap(fieldMessages),
+      }));
     }
   }
 
@@ -55,9 +58,11 @@ class Errors {
       return;
     }
 
-    const newState = { ...this.state };
-    delete newState[field];
-    this.setState(newState);
+    this.setState((state) => {
+      const newState = { ...state };
+      delete newState[field];
+      return newState;
+    });
   }
 }
 
