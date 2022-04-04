@@ -77,7 +77,8 @@
   "release-it": {
     "hooks": {
       "before:init": [
-        "npm run coverage"
+        "npm run coverage",
+        "npm run lint"
       ],
       "after:bump": "npm run build"
     }
