@@ -1,7 +1,14 @@
 {
   "name": "@alfonsobries/react-use-form",
   "version": "0.1.7",
-  "description": "Form hook for React to be used with Laravel Apis",
+  "description": "React hook for handling Laravel form requests and validation (for React & React Native)",
+  "keywords": [
+    "react",
+    "react-native",
+    "form",
+    "validation",
+    "laravel"
+  ],
   "types": "./dist/index.d.ts",
   "main": "./dist/index.umd.js",
   "module": "./dist/index.es.js",
