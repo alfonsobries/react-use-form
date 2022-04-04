@@ -1,0 +1,20 @@
+name: Run tests
+on: pull_request
+jobs:
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run the action
+        uses: ./
+        with:
+          version: 4.11.1
+          dest: ~/test/pnpm
+
+      - name: 'Test: which'
+        run: which pnpm && which pnpx
+
+      - name: 'Test: install'
+        run: pnpm install
+
+      # Run tests
+      - run: pnpm test coverage
