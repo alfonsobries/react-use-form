@@ -192,12 +192,15 @@ class Form<Data extends Record<string, any>> {
   }
 
   handleErrors(error: AxiosError) {
-    this.setState('busy', false);
-    this.setState('progress', undefined);
-
     if (error.response) {
       this.errors.set(this.extractErrors(error.response));
     }
+
+    this.formState[1]({
+      ...this.formState[0],
+      busy: false,
+      progress: undefined,
+    });
   }
 
   extractErrors(response: AxiosResponse): Record<string, any> {
