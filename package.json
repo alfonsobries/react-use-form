@@ -31,7 +31,7 @@
     "coverage": "vitest run --coverage",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier  --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ",
-    "lint": "pnpm lint:format && pnpm lint:fix ",
+    "lint": "npm run lint:format && npm run lint:fix ",
     "release": "release-it"
   },
   "devDependencies": {
@@ -76,10 +76,10 @@
   "release-it": {
     "hooks": {
       "before:init": [
-        "pnpm lint",
-        "pnpm coverage"
+        "npm run lint",
+        "npm run coverage"
       ],
-      "after:bump": "pnpm build"
+      "after:bump": "npm run build"
     }
   }
 }
