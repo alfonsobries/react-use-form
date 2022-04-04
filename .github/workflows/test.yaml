@@ -5,20 +5,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout the Repo
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
       # Install Node 12
       - name: Setup Node
-        uses: ./
+        uses: actions/setup-node@v1
         with:
-          version: 4.11.1
-          dest: ~/test/pnpm
-
-      - name: 'Test: which'
-        run: which pnpm && which pnpx
+          node-version: 12
 
       # Install dependencies
-      - run: pnpm install
+      - run: npm install
 
       # Run tests
-      - run: pnpm test
+      - run: npm test
