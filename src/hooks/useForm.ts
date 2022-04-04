@@ -1,10 +1,19 @@
-import { useState } from 'react';
+import { AxiosInstance } from 'axios';
+import { useContext, useState } from 'react';
 
+import FormContext from '../context/FormContext';
 import Form, { FormState } from '../form/Form';
 
 export const useForm = <Data extends Record<string, any>>(
   data: Data,
+  axiosInstance?: AxiosInstance,
 ): Form<Data> & Data & Omit<FormState<Data>, 'data'> => {
+  const axios = useContext(FormContext) || axiosInstance;
+
+  if (axios !== undefined) {
+    Form.axios = axios;
+  }
+
   const formState = useState<FormState<Data>>({
     data,
     busy: false,

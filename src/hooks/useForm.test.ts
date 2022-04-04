@@ -1,8 +1,10 @@
+import { render } from '@testing-library/react';
 import { act, renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { afterEach, describe, expect, it, spyOn, vi } from 'vitest';
 
+import { Provider } from '../context/FormContext';
 import Errors from '../form/Errors';
 import Form from '../form/Form';
 import { useForm } from './useForm';
@@ -562,6 +564,23 @@ describe('useForm', () => {
         await result.current.submit('POST', apiBase);
 
         expect(result.current.progress).toBeUndefined();
+      });
+    });
+
+    describe('Axios instance', () => {
+      it('accepts a custom axios instance', () => {
+        const axiosInstance = axios.create({
+          baseURL: 'http://localhost:3000',
+        });
+
+        const { result } = renderHook(() => useForm({}, axiosInstance));
+
+        mock.onPost('http://localhost:3000/users').reply(async (config) => {
+          expect(config.baseURL).toBe('http://localhost:3000');
+          return [200, {}];
+        });
+
+        result.current.post('/users');
       });
     });
   });
