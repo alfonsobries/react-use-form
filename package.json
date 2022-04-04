@@ -1,5 +1,5 @@
 {
-  "name": "react-use-form",
+  "name": "@alfonsobries/react-use-form",
   "version": "0.0.0",
   "description": "Form hook for React to be used with Laravel Apis",
   "types": "./dist/index.d.ts",
