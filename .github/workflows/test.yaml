@@ -1,11 +1,14 @@
-name: Run tests
+name: CI
 on: pull_request
 jobs:
   tests:
+    runs-on: ubuntu-latest
     steps:
+      # Checkout the Repo
       - uses: actions/checkout@v3
 
-      - name: Run the action
+      # Install Node 12
+      - name: Setup Node
         uses: ./
         with:
           version: 4.11.1
@@ -14,8 +17,8 @@ jobs:
       - name: 'Test: which'
         run: which pnpm && which pnpx
 
-      - name: 'Test: install'
-        run: pnpm install
+      # Install dependencies
+      - run: pnpm install
 
       # Run tests
       - run: pnpm test coverage
