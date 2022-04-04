@@ -25,7 +25,7 @@
   "sideEffects": false,
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
     "coverage": "vitest run --coverage",
@@ -69,7 +69,7 @@
     "vite": "^2.9.0",
     "vitest": "^0.8.2"
   },
-  "dependencies": {
+  "peerDependencies": {
     "axios": "^0.26.1",
     "react": "^16.9.0"
   },
