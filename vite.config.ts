@@ -12,7 +12,7 @@ export default defineConfig({
     minify: false,
     sourcemap: true,
     lib: {
-      entry: path.resolve(__dirname, 'src/main.ts'),
+      entry: path.resolve(__dirname, 'src/index.ts'),
       name: '@alfonsobries/react-use-form',
       fileName: (format) => `index.${format}.js`,
     },
