@@ -20,13 +20,8 @@ export interface Progress {
   loaded: number;
   percentage: number;
 }
+
 class Form<Data extends Record<string, any>> {
-  busy: boolean = false;
-
-  successful: boolean = false;
-
-  progress: Progress | undefined;
-
   originalData: Data;
 
   formState: [FormState<Data>, React.Dispatch<React.SetStateAction<FormState<Data>>>];

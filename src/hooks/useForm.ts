@@ -4,7 +4,7 @@ import Form, { FormState } from '../form/Form';
 
 export const useForm = <Data extends Record<string, any>>(
   data: Data,
-): Form<Data> & Data => {
+): Form<Data> & Data & Omit<FormState<Data>, 'data'> => {
   const formState = useState<FormState<Data>>({
     data,
     busy: false,
@@ -28,5 +28,5 @@ export const useForm = <Data extends Record<string, any>>(
 
       return (form as any)[attribute];
     },
-  }) as Form<Data> & Data;
+  }) as Form<Data> & Data & Omit<FormState<Data>, 'data'>;
 };
