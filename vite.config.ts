@@ -9,7 +9,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   plugins: [react()],
   build: {
-    minify: true,
+    minify: false,
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, 'src/main.ts'),
