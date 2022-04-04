@@ -28,7 +28,7 @@ specifiers:
   path: ^0.12.7
   prettier: ^2.6.1
   react: ^16.9.0
-  react-dom: ^18.0.0
+  react-dom: ^16.9.0
   react-test-renderer: ^16.9.0
   release-it: ^14.14.0
   rollup: ^2.70.1
@@ -45,8 +45,8 @@ devDependencies:
   '@rollup/plugin-typescript': 8.3.1_8fb0118e9d69f3600cbb8f144f7d456c
   '@testing-library/dom': 8.12.0
   '@testing-library/jest-dom': 5.16.3
-  '@testing-library/react': 12.1.4_react-dom@18.0.0+react@16.14.0
-  '@testing-library/react-hooks': 7.0.2_994eb29eba4d39d4e198581325580a1c
+  '@testing-library/react': 12.1.4_react-dom@16.14.0+react@16.14.0
+  '@testing-library/react-hooks': 7.0.2_180f626ceae074ad6840d5b4beae7c3c
   '@testing-library/user-event': 13.5.0_@testing-library+dom@8.12.0
   '@types/node': 17.0.23
   '@types/react': 17.0.43
@@ -67,7 +67,7 @@ devDependencies:
   jsdom: 19.0.0
   path: 0.12.7
   prettier: 2.6.1
-  react-dom: 18.0.0_react@16.14.0
+  react-dom: 16.14.0_react@16.14.0
   react-test-renderer: 16.14.0_react@16.14.0
   release-it: 14.14.0
   rollup: 2.70.1
@@ -642,7 +642,7 @@ packages:
       redent: 3.0.0
     dev: true
 
-  /@testing-library/react-hooks/7.0.2_994eb29eba4d39d4e198581325580a1c:
+  /@testing-library/react-hooks/7.0.2_180f626ceae074ad6840d5b4beae7c3c:
     resolution: {integrity: sha512-dYxpz8u9m4q1TuzfcUApqi8iFfR6R0FaMbr2hjZJy1uC8z+bO/K4v8Gs9eogGKYQop7QsrBTFkv/BCF7MzD2Cg==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -660,12 +660,12 @@ packages:
       '@types/react-dom': 17.0.14
       '@types/react-test-renderer': 17.0.1
       react: 16.14.0
-      react-dom: 18.0.0_react@16.14.0
+      react-dom: 16.14.0_react@16.14.0
       react-error-boundary: 3.1.4_react@16.14.0
       react-test-renderer: 16.14.0_react@16.14.0
     dev: true
 
-  /@testing-library/react/12.1.4_react-dom@18.0.0+react@16.14.0:
+  /@testing-library/react/12.1.4_react-dom@16.14.0+react@16.14.0:
     resolution: {integrity: sha512-jiPKOm7vyUw311Hn/HlNQ9P8/lHNtArAx0PisXyFixDDvfl8DbD6EUdbshK5eqauvBSvzZd19itqQ9j3nferJA==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -676,7 +676,7 @@ packages:
       '@testing-library/dom': 8.12.0
       '@types/react-dom': 17.0.14
       react: 16.14.0
-      react-dom: 18.0.0_react@16.14.0
+      react-dom: 16.14.0_react@16.14.0
     dev: true
 
   /@testing-library/user-event/13.5.0_@testing-library+dom@8.12.0:
@@ -3722,14 +3722,16 @@ packages:
       strip-json-comments: 2.0.1
     dev: true
 
-  /react-dom/18.0.0_react@16.14.0:
-    resolution: {integrity: sha512-XqX7uzmFo0pUceWFCt7Gff6IyIMzFUn7QMZrbrQfGxtaxXZIcGQzoNpRLE3fQLnS4XzLLPMZX2T9TRcSrasicw==}
+  /react-dom/16.14.0_react@16.14.0:
+    resolution: {integrity: sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==}
     peerDependencies:
-      react: ^18.0.0
+      react: ^16.14.0
     dependencies:
       loose-envify: 1.4.0
+      object-assign: 4.1.1
+      prop-types: 15.8.1
       react: 16.14.0
-      scheduler: 0.21.0
+      scheduler: 0.19.1
     dev: true
 
   /react-error-boundary/3.1.4_react@16.14.0:
@@ -3990,12 +3992,6 @@ packages:
     dependencies:
       loose-envify: 1.4.0
       object-assign: 4.1.1
-    dev: true
-
-  /scheduler/0.21.0:
-    resolution: {integrity: sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==}
-    dependencies:
-      loose-envify: 1.4.0
     dev: true
 
   /semver-diff/3.1.1:
