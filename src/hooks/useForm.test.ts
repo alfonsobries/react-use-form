@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { afterEach, describe, expect, it, spyOn } from 'vitest';
+import { afterEach, describe, expect, it, spyOn, vi } from 'vitest';
 
 import Errors from '../form/Errors';
 import Form from '../form/Form';
@@ -393,6 +393,45 @@ describe('useForm', () => {
       mock.onPut(apiBase).reply((config) => {
         expect(config.data).toBeInstanceOf(FormData);
         expect(config.data.has('photo')).toBeTruthy();
+        expect(config.data.has('name')).toBeTruthy();
+
+        return [200, {}];
+      });
+
+      await form.submit('put', apiBase);
+    });
+
+    it('transform file list to FormData', async () => {
+      const getFileList = () => {
+        const blob = new Blob([''], { type: 'text/html' });
+        blob['lastModifiedDate'] = '';
+        blob['name'] = 'filename';
+        const file = <File>blob;
+        const files = [file, file];
+
+        const fileList = Object.assign(Object.create(FileList.prototype), {
+          0: files[0],
+          1: files[1],
+          item: (index: number) => files[index],
+        }) as unknown as FileList;
+
+        vi.spyOn(fileList, 'length', 'get').mockReturnValue(2);
+
+        return fileList;
+      };
+
+      const dataWithObject = {
+        ...data,
+        photos: getFileList(),
+      };
+
+      const {
+        result: { current: form },
+      } = renderHook(() => useForm(dataWithObject));
+
+      mock.onPut(apiBase).reply((config) => {
+        expect(config.data).toBeInstanceOf(FormData);
+        expect(config.data.has('photos')).toBeTruthy();
         expect(config.data.has('name')).toBeTruthy();
 
         return [200, {}];
