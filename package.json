@@ -37,7 +37,7 @@
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "lint:fix": "eslint ./src --ext .jsx,.js,.ts,.tsx --quiet --fix --ignore-path ./.gitignore",
-    "lint:format": "prettier --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" ./src",
+    "lint:format": "prettier --loglevel warn --write \"./**/*.{js,jsx,ts,tsx,css,md,json}\" --ignore-path ./.gitignore",
     "lint": "npm run lint:format && npm run lint:fix ",
     "release": "release-it"
   },
