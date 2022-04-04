@@ -1,6 +1,9 @@
 name: Run tests
+
 on: pull_request
+
 jobs:
+  tests:
     steps:
       - uses: actions/checkout@v3
 
