@@ -2,7 +2,9 @@ import { useState } from 'react';
 
 import Form, { FormState } from '../form/Form';
 
-export const useForm = <Data extends Record<string, any>>(data: Data): Form<Data> => {
+export const useForm = <Data extends Record<string, any>>(
+  data: Data,
+): Form<Data> & Data => {
   const formState = useState<FormState<Data>>({
     data,
     busy: false,
@@ -21,10 +23,10 @@ export const useForm = <Data extends Record<string, any>>(data: Data): Form<Data
       }
 
       if (['progress', 'busy', 'successful'].includes(attribute)) {
-        return form.formState[0][attribute];
+        return form.formState[0][attribute as 'progress' | 'busy' | 'successful'];
       }
 
-      return form[attribute];
+      return (form as any)[attribute];
     },
-  });
+  }) as Form<Data> & Data;
 };

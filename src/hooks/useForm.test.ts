@@ -21,7 +21,7 @@ describe('useForm', () => {
     } = renderHook(() => useForm(data));
 
     Object.entries(data).forEach(([key, value]) => {
-      expect(form[key]).toBe(value);
+      expect((form as any)[key]).toBe(value);
     });
   });
 
@@ -372,7 +372,7 @@ describe('useForm', () => {
           result: { current: form },
         } = renderHook(() => useForm(data));
 
-        const response = await form[method](apiBase);
+        const response = await (form as any)[method](apiBase);
 
         expect(response.data.method).toEqual(method);
 
@@ -403,7 +403,7 @@ describe('useForm', () => {
 
     it('transform file list to FormData', async () => {
       const getFileList = () => {
-        const blob = new Blob([''], { type: 'text/html' });
+        const blob = new Blob([''], { type: 'text/html' }) as any;
         blob['lastModifiedDate'] = '';
         blob['name'] = 'filename';
         const file = <File>blob;

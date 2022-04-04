@@ -25,11 +25,7 @@ export default defineConfig({
           'react-dom': 'ReactDOM',
         },
       },
-      plugins: [
-        typescript({
-          exclude: ['node_modules'],
-        }),
-      ],
+      plugins: [typescript()],
     },
   },
   test: {

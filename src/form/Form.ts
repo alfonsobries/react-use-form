@@ -21,7 +21,11 @@ export interface Progress {
   percentage: number;
 }
 class Form<Data extends Record<string, any>> {
-  Data;
+  busy: boolean = false;
+
+  successful: boolean = false;
+
+  progress: Progress | undefined;
 
   originalData: Data;
 
@@ -67,11 +71,11 @@ class Form<Data extends Record<string, any>> {
     return Object.keys(this.formState[0].data);
   }
 
-  fill(data: Data = {} as Data) {
+  fill(data: Partial<Data> = {}) {
     this.setState('data', {
       ...this.formState[0]['data'],
       ...data,
-    });
+    } as Data);
   }
 
   data(): Data {
