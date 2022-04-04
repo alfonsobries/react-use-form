@@ -1,22 +1,11 @@
-name: Run tests
+name: CI
 on: push
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Run the action
-        uses: ./
-        with:
-          version: 4.11.1
-          dest: ~/test/pnpm
-
-      - name: 'Test: which'
-        run: which pnpm && which pnpx
-
-      - name: 'Test: install'
-        run: pnpm install
-
-      # Run tests
-      - run: pnpm test coverage
+    - uses: actions/checkout@v2
+    - name: Install modules
+      run: pnpm
+    - name: Run tests
+      run: pnpm coverage
