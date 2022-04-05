@@ -77,6 +77,128 @@ const onSubmit = () => {
 }
 ```
 
+## API
+
+### Form API
+
+
+```ts
+const form = new Form({ ... })
+
+/**
+ * Indicates if the form is busy making an HTTP request to the server.
+ */
+form.busy: boolean
+
+/**
+ * Indicates if the form HTTP request was successful.
+ */
+form.successful: boolean
+
+/**
+ * The validation errors from the server.
+ */
+form.errors: Errors
+
+/**
+ * The upload progress object.
+ */
+form.progress: { total: number, loaded: number, percentage: number } | undefined
+
+/**
+ * Set the value for the attribute
+ */
+form.set(field: string, fieldValue: any)
+
+/**
+ * Submit the form data via an HTTP request.
+ */
+form.submit(method: string, url: string, config = {})
+form.post|patch|put|delete|get(url: string, config = {})
+
+/**
+ * Clear the form errors.
+ */
+form.clear()
+
+/**
+ * Reset the form data.
+ */
+form.reset()
+
+/**
+ * Update the form data.
+ */
+form.update({ ... })
+
+/**
+ * Fill the form data.
+ */
+form.fill({ ... })
+
+```
+
+### Errros API
+
+
+```ts
+/**
+ * Get all the errors.
+ */
+form.errors.all()
+
+/**
+ * Determine if there is an error for the given field.
+ */
+form.errors.has(field: string): boolean
+
+/**
+ * Determine if there are any errors for the given fields.
+ */
+form.errors.hasAny(...fields: string[]): boolean
+
+/**
+ * Determine if there are any errors.
+ */
+form.errors.any(): boolean
+
+/**
+ * Get the first error message for the given field.
+ */
+form.errors.get(field: string): string|undefined
+
+/**
+ * Get all the error messages for the given field.
+ */
+form.errors.getAll(field: string): string[]
+
+/**
+ * Get the error message for the given fields.
+ */
+form.errors.only(...fields: string[]): string[]
+
+/**
+ * Get all the errors in a flat array.
+ */
+form.errors.flatten(): string[]
+
+/**
+ * Clear one or all error fields.
+ */
+form.errors.clear(field: string|undefined)
+
+/**
+ * Set the errors object.
+ */
+form.errors.set(errors = {})
+
+/**
+ * Set a specified error message.
+ */
+form.errors.set(field: string, message: string)
+
+```
+
 ## Examples
 ### React Form (with Typescript)
 
