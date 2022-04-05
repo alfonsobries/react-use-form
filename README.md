@@ -345,9 +345,9 @@ function LoginForm() {
 export default LoginForm
 ```
 
-### Contribute
+## Contribute
 
 Did I save you a few hours of work? Consider:
 
 - 💵 [Sponsoring my open source work](https://github.com/sponsors/alfonsobries)
-- ⭐ Nominating me as Github Star [https://stars.github.com/nominate/](https://stars.github.com/nominate/)
+- ⭐ [Nominating me as Github Star](https://stars.github.com/nominate/)
