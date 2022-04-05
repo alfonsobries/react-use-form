@@ -9,6 +9,7 @@ React hook for handling form states, requests, and validation, compatible with R
 - ✅ 100% Test coverage
 - ✅ Strong typed with Typescript
 - ✅ Ready for Laravel validation responses
+- ✅ Error handling
 
 ## Installation
 
@@ -77,6 +78,44 @@ const onSubmit = () => {
 }
 ```
 
+## Custom axios instance
+
+If needed, you can pass your custom axios instance as the second parameter of the hook
+
+```ts
+const instance = axios.create({
+  baseURL: 'https://some-domain.com/api/',
+  timeout: 1000,
+  headers: {'X-Custom-Header': 'foobar'}
+});
+
+const form = useForm(formState, instance);
+
+// ...
+const submitHandler = async () => {
+  // Since the custom instance has a baseUrl I can pass a relative path:
+  const response = await form.post('relative/path');
+}
+```
+
+You can also use the included form context to change the axios instance globally
+
+```jsx
+// Inside the main file
+import { FormContext } from '@alfonsobries/react-use-form';
+
+const instance = axios.create({
+  baseURL: 'https://some-domain.com/api/',
+  timeout: 1000,
+  headers: {'X-Custom-Header': 'foobar'}
+});
+
+function App() {
+  <FormContext.Provider value={instance}>
+    <ChildComponent />
+  </FormContext.Provider>  
+}
+```
 ## API
 
 ### Form API
@@ -153,11 +192,6 @@ form.errors.all()
 form.errors.has(field: string): boolean
 
 /**
- * Determine if there are any errors for the given fields.
- */
-form.errors.hasAny(...fields: string[]): boolean
-
-/**
  * Determine if there are any errors.
  */
 form.errors.any(): boolean
@@ -171,11 +205,6 @@ form.errors.get(field: string): string|undefined
  * Get all the error messages for the given field.
  */
 form.errors.getAll(field: string): string[]
-
-/**
- * Get the error message for the given fields.
- */
-form.errors.only(...fields: string[]): string[]
 
 /**
  * Get all the errors in a flat array.
