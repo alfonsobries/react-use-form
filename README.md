@@ -16,13 +16,66 @@ React hook for handling form states, requests, and validation, compatible with R
 npm install @alfonsobries/react-use-form 
 ```
 
-Or as an alternative, use `yarn`
+Or, as an alternative, use `yarn`
 
 ```console
 yarn add @alfonsobries/react-use-form 
 ```
 
-### Handling Form state
+## Quick usage
+
+1. Import the `useForm` hook
+
+```jsx
+import useForm from '@alfonsobries/react-use-form';
+```
+
+2. Initialize your form by passing the form state to the hook function. You can use the form.attributes directly to read the state and use the form API to manage the values and the errors.
+
+```jsx
+function MyComponent()  {
+  const formState = {
+    name: 'Alfonso',
+    email: 'alfonso@vexilo.com',
+    rememberMe: false,
+  }
+  
+  const form = useForm(formState)
+
+  const onSubmit = () => {
+    // Submit handling
+  }
+
+  return (
+    <form onSubmit={onSubmit}>
+      <div>
+        <label>Name</label>
+        <input type="text" value={form.name} onChange={e => form.set('name', e.target.value)} />
+        {form.errors.has('name') && <span>{ form.errors.get('name') }</span>}
+      </div>
+
+      <button type="submit">Submit</button>
+    </form>
+  )
+
+}
+```
+
+3. Use the request methods to send an HTTP request with the form state.
+
+```js
+// Submit method (called by the form (see full example above))
+const onSubmit = () => {
+  // Submit handling
+  // you can use `.post`, `.get`, `.delete`, etc.
+  form.post('https://my-custom-api.test')
+      .then((response) => {
+        console.log(response.data)
+      }).catch(error => {
+        console.error(error)
+      })
+}
+```
 
 ## Examples
 ### React Form (with Typescript)
@@ -51,6 +104,8 @@ function LoginForm() {
         // `response.data` is typed as `ExampleApiResponse`
         console.log(response.data.myString.charAt(0))
         console.log(response.data.myNumber.toFixed())
+      }).catch(error => {
+        console.error(error)
       })
   }
 
@@ -75,6 +130,8 @@ function LoginForm() {
           Remember me
         </label>
       </div>
+
+      <button type="submit">Submit</button>
     </form>
   )
 }
@@ -102,6 +159,8 @@ function LoginForm() {
       .then((response) => {
         console.log(response.data.myString.charAt(0))
         console.log(response.data.myNumber.toFixed())
+      }).catch(error => {
+        console.error(error)
       })
   }
 
@@ -126,6 +185,8 @@ function LoginForm() {
           Remember me
         </label>
       </div>
+
+      <button type="submit">Submit</button>
     </form>
   )
 }
