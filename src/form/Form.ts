@@ -114,14 +114,14 @@ class Form<Data extends Record<string, any>> {
    * Submit the form via a GET request.
    */
   get<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<T>> {
-    return this.submit('get', url, config);
+    return this.submit<T>('get', url, config);
   }
 
   /**
    * Submit the form via a POST request.
    */
   post<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<T>> {
-    return this.submit('post', url, config);
+    return this.submit<T>('post', url, config);
   }
 
   /**
@@ -131,14 +131,14 @@ class Form<Data extends Record<string, any>> {
     url: string,
     config: AxiosRequestConfig = {},
   ): Promise<AxiosResponse<T>> {
-    return this.submit('patch', url, config);
+    return this.submit<T>('patch', url, config);
   }
 
   /**
    * Submit the form via a PUT request.
    */
   put<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<T>> {
-    return this.submit('put', url, config);
+    return this.submit<T>('put', url, config);
   }
 
   /**
@@ -148,7 +148,7 @@ class Form<Data extends Record<string, any>> {
     url: string,
     config: AxiosRequestConfig = {},
   ): Promise<AxiosResponse<T>> {
-    return this.submit('delete', url, config);
+    return this.submit<T>('delete', url, config);
   }
 
   submit<T = any>(
@@ -180,7 +180,7 @@ class Form<Data extends Record<string, any>> {
     return new Promise((resolve, reject) => {
       (Form.axios || axios)
         .request(config)
-        .then((response: AxiosResponse) => {
+        .then((response: AxiosResponse<T>) => {
           this.finishProcessing();
           resolve(response);
         })
