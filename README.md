@@ -177,7 +177,7 @@ form.fill({ ... })
 
 ```
 
-### Errros API
+### Errors API
 
 
 ```ts
