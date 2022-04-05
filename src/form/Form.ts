@@ -3,6 +3,7 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
+  Method,
 } from 'axios';
 import React from 'react';
 
@@ -152,7 +153,7 @@ class Form<Data extends Record<string, any>> {
   }
 
   submit<T = any>(
-    method: string,
+    method: Method,
     url: string,
     config: AxiosRequestConfig = {},
   ): Promise<AxiosResponse<T>> {
@@ -162,7 +163,7 @@ class Form<Data extends Record<string, any>> {
       data: {},
       params: {},
       url,
-      method: method as any,
+      method,
       onUploadProgress: this.handleUploadProgress.bind(this),
       ...config,
     };
@@ -177,7 +178,7 @@ class Form<Data extends Record<string, any>> {
       }
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise<AxiosResponse<T>>((resolve, reject) => {
       (Form.axios || axios)
         .request(config)
         .then((response: AxiosResponse<T>) => {
