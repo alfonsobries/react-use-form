@@ -1,13 +1,22 @@
+
 [![CI](https://github.com/alfonsobries/react-use-form/actions/workflows/test.yaml/badge.svg)](https://github.com/alfonsobries/react-use-form/actions/workflows/test.yaml)
 
 # React-use-form:
 
 React hook for handling form states, requests, and validation, compatible with React and React Native.
 
+- ✅ Simple and intuitive API
 - ✅ 100% Test coverage
 - ✅ Strong typed with Typescript
-- ✅ Simple and intuitive API
 - ✅ Ready for Laravel validation responses
+
+## Installation
+
+```console
+foo@bar:~$ npm install @alfonsobries/react-use-form 
+```
+
+### Handling Form state
 
 ## Examples
 ### React Form (with Typescript)
