@@ -13,7 +13,13 @@ React hook for handling form states, requests, and validation, compatible with R
 ## Installation
 
 ```console
-foo@bar:~$ npm install @alfonsobries/react-use-form 
+npm install @alfonsobries/react-use-form 
+```
+
+Or as an alternative, use `yarn`
+
+```console
+yarn add @alfonsobries/react-use-form 
 ```
 
 ### Handling Form state
