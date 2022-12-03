@@ -33,6 +33,14 @@ class Errors {
     return undefined;
   }
 
+  getAll(field: string): string[] | undefined {
+    if (this.state[field] !== undefined) {
+      return this.state[field];
+    }
+
+    return undefined;
+  }
+
   has(field: string): boolean {
     return this.state[field] !== undefined;
   }
