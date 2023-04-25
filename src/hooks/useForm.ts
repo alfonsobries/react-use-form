@@ -4,14 +4,13 @@ import { useContext, useState } from 'react';
 import FormContext from '../context/FormContext';
 import Form, { FormState } from '../form/Form';
 
-export type FormType<Data = Record<string, any>> = Form<Data> &
-  Data &
-  Omit<FormState<Data>, 'data'>;
+export type FormType<Data extends Record<string, any> = Record<string, any>> =
+  Form<Data> & Data & Omit<FormState<Data>, 'data'>;
 
-export const useForm = <Data extends Record<string, any>>(
+export const useForm = <Data extends Record<string, any> = Record<string, any>>(
   data: Data,
   axiosInstance?: AxiosInstance,
-): FormType => {
+): FormType<Data> => {
   const axios = useContext(FormContext) || axiosInstance;
 
   if (axios !== undefined) {
@@ -41,5 +40,5 @@ export const useForm = <Data extends Record<string, any>>(
 
       return (form as any)[attribute];
     },
-  }) as FormType;
+  }) as FormType<Data>;
 };
