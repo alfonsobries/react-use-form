@@ -60,15 +60,20 @@ class Errors {
     );
   }
 
-  clear(field?: string): void {
-    if (field === undefined) {
+  clear(fieldOrFields?: string | string[]): void {
+    if (fieldOrFields === undefined) {
       this.setState({});
       return;
     }
 
     this.setState((state) => {
       const newState = { ...state };
-      delete newState[field];
+      const fields = arrayWrap(fieldOrFields);
+
+      fields.forEach((field) => {
+        delete newState[field];
+      });
+
       return newState;
     });
   }

@@ -215,9 +215,9 @@ form.errors.getAll(field: string): string[]
 form.errors.flatten(): string[]
 
 /**
- * Clear one or all error fields.
+ * Clear one, some or all error fields.
  */
-form.errors.clear(field: string|undefined)
+form.errors.clear(field: string|string[]|undefined)
 
 /**
  * Set the errors object.
@@ -245,7 +245,7 @@ type ExampleApiResponse = {
 };
 
 function LoginForm() {
-  const form = useForm({
+  const form: Form = useForm({
     name: 'Alfonso',
     email: 'alfonso@vexilo.com',
     rememberMe: false,

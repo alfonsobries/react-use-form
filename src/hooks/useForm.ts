@@ -2,19 +2,19 @@ import { AxiosInstance } from 'axios';
 import { useContext, useState } from 'react';
 
 import FormContext from '../context/FormContext';
-import Form, { FormState } from '../form/Form';
+import FormClass, { FormState } from '../form/Form';
 
-export type FormType<Data extends Record<string, any> = Record<string, any>> =
-  Form<Data> & Data & Omit<FormState<Data>, 'data'>;
+export type Form<Data extends Record<string, any> = Record<string, any>> =
+  FormClass<Data> & Data & Omit<FormState<Data>, 'data'>;
 
 export const useForm = <Data extends Record<string, any> = Record<string, any>>(
   data: Data,
   axiosInstance?: AxiosInstance,
-): FormType<Data> => {
+): Form<Data> => {
   const axios = useContext(FormContext) || axiosInstance;
 
   if (axios !== undefined) {
-    Form.axios = axios;
+    FormClass.axios = axios;
   }
 
   const formState = useState<FormState<Data>>({
@@ -25,11 +25,11 @@ export const useForm = <Data extends Record<string, any> = Record<string, any>>(
   });
 
   const errorsState = useState({});
-  const form = new Form(formState, errorsState);
+  const form = new FormClass(formState, errorsState);
 
   // eslint-disable-next-line no-undef
   return new Proxy(form, {
-    get(form: Form<Data>, attribute: string) {
+    get(form: FormClass<Data>, attribute: string) {
       if (form.keys().includes(attribute)) {
         return form.getField(attribute);
       }
@@ -40,5 +40,5 @@ export const useForm = <Data extends Record<string, any> = Record<string, any>>(
 
       return (form as any)[attribute];
     },
-  }) as FormType<Data>;
+  }) as Form<Data>;
 };

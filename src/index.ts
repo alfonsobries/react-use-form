@@ -5,6 +5,6 @@ export { FormContext };
 
 export type { default as Errors } from './form/Errors';
 export type { FormState, Progress } from './form/Form';
-export type { FormType as Form } from './hooks/useForm';
+export type { Form } from './hooks/useForm';
 
 export default useForm;
