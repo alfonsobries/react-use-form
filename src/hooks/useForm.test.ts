@@ -1,7 +1,7 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
-import { afterEach, describe, expect, it, spyOn, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import Errors from '../form/Errors';
 import Form from '../form/Form';
@@ -520,14 +520,19 @@ describe('useForm', () => {
           const total = 1024; // mocked file size
           const progress = 0.4;
           if (config.onUploadProgress) {
-            config.onUploadProgress({ loaded: total * progress, total });
+            config.onUploadProgress({
+              loaded: total * progress,
+              total,
+              bytes: total,
+              lengthComputable: true,
+            });
           }
           return [200, null];
         });
 
         const { result } = renderHook(() => useForm(data));
 
-        const handleUploadProgressSpy = spyOn(result.current, 'handleUploadProgress');
+        const handleUploadProgressSpy = vi.spyOn(result.current, 'handleUploadProgress');
 
         await result.current.submit('POST', apiBase);
 
@@ -545,7 +550,12 @@ describe('useForm', () => {
           const progress = 0.4;
 
           if (config.onUploadProgress) {
-            config.onUploadProgress({ loaded: total * progress, total });
+            config.onUploadProgress({
+              loaded: total * progress,
+              total,
+              bytes: total,
+              lengthComputable: true,
+            });
           }
 
           expect(result.current.progress).toEqual({

@@ -1,6 +1,7 @@
 import axios, {
   AxiosError,
   AxiosInstance,
+  AxiosProgressEvent,
   AxiosRequestConfig,
   AxiosResponse,
   Method,
@@ -220,11 +221,11 @@ class Form<Data extends Record<string, any>> {
     return { ...response.data };
   }
 
-  handleUploadProgress(event: ProgressEvent) {
+  handleUploadProgress(event: AxiosProgressEvent) {
     this.setState('progress', {
       total: event.total,
       loaded: event.loaded,
-      percentage: Math.round((event.loaded * 100) / event.total),
+      percentage: Math.round((event.loaded * 100) / (event.total || 0)),
     });
   }
 
