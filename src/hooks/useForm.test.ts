@@ -764,7 +764,12 @@ describe('useForm', () => {
           const total = 1024; // mocked file size
           const progress = 0.4;
           if (config.onUploadProgress) {
-            config.onUploadProgress({ loaded: total * progress, total });
+            config.onUploadProgress({
+              loaded: total * progress,
+              total,
+              bytes: total,
+              lengthComputable: true,
+            });
           }
           return [200, null];
         });
@@ -776,6 +781,8 @@ describe('useForm', () => {
         await result.current.submit('POST', apiBase);
 
         expect(handleUploadProgressSpy).toHaveBeenCalledWith({
+          bytes: 1024,
+          lengthComputable: true,
           loaded: 409.6,
           total: 1024,
         });
@@ -789,7 +796,12 @@ describe('useForm', () => {
           const progress = 0.4;
 
           if (config.onUploadProgress) {
-            config.onUploadProgress({ loaded: total * progress, total });
+            config.onUploadProgress({
+              loaded: total * progress,
+              total,
+              bytes: total,
+              lengthComputable: true,
+            });
           }
 
           expect(result.current.progress).toEqual({
