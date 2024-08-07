@@ -5,7 +5,7 @@ import axios, {
   AxiosResponse,
   Method,
 } from 'axios';
-import React from 'react';
+import React, { MutableRefObject, Ref } from 'react';
 
 import { deepCopy, hasFiles } from '../utils';
 import Errors from './Errors';
@@ -24,7 +24,7 @@ export interface Progress {
 }
 
 class Form<Data extends Record<string, any>> {
-  originalData: Data;
+  originalData: MutableRefObject<Data>;
 
   formState: [FormState<Data>, React.Dispatch<React.SetStateAction<FormState<Data>>>];
 
@@ -36,6 +36,7 @@ class Form<Data extends Record<string, any>> {
 
   constructor(
     formState: [FormState<Data>, React.Dispatch<React.SetStateAction<FormState<Data>>>],
+    originalData: MutableRefObject<Data>,
     errorsState: [
       Record<string, string[]>,
       React.Dispatch<React.SetStateAction<Record<string, string[]>>>,
@@ -43,7 +44,7 @@ class Form<Data extends Record<string, any>> {
   ) {
     this.formState = formState;
     this.errors = new Errors(errorsState);
-    this.originalData = deepCopy<Data>(formState[0].data);
+    this.originalData = originalData;
   }
 
   setState(field: string, value: any) {
@@ -83,13 +84,13 @@ class Form<Data extends Record<string, any>> {
   }
 
   reset(): void {
-    this.setState('data', this.originalData);
+    this.setState('data', this.originalData.current);
   }
 
   isDirty(): boolean {
-    return !this.keys().every((key) => {
-      return this.getField(key) === this.originalData[key];
-    });
+    return !this.keys().every(
+      (key) => this.getField(key) === this.originalData.current[key],
+    );
   }
 
   /**

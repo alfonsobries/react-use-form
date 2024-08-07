@@ -111,33 +111,33 @@ describe('useForm', () => {
     expect(form.errors).toBeInstanceOf(Errors);
   });
 
-  // it('should be dirty if a field is changed', () => {
-  //   const { result } = renderHook(() => useForm(data));
+  it('should be dirty if a field is changed', () => {
+    const { result } = renderHook(() => useForm(data));
 
-  //   expect(result.current.dirty).toBe(false);
+    expect(result.current.dirty).toBe(false);
 
-  //   act(() => {
-  //     result.current.set('name', 'Saida');
-  //   });
+    act(() => {
+      result.current.set('name', 'Saida');
+    });
 
-  //   expect(result.current.dirty).toBe(true);
-  // });
+    expect(result.current.dirty).toBe(true);
+  });
 
-  // it('should not be dirty after reset', () => {
-  //   const { result } = renderHook(() => useForm(data));
+  it('should not be dirty after reset', () => {
+    const { result } = renderHook(() => useForm(data));
 
-  //   act(() => {
-  //     result.current.set('name', 'Saida');
-  //   });
+    act(() => {
+      result.current.set('name', 'Saida');
+    });
 
-  //   expect(result.current.isDirty()).toBe(true);
+    expect(result.current.dirty).toBe(true);
 
-  //   act(() => {
-  //     result.current.reset();
-  //   });
+    act(() => {
+      result.current.reset();
+    });
 
-  //   expect(result.current.dirty).toBe(false);
-  // });
+    expect(result.current.dirty).toBe(false);
+  });
 
   describe('Errors', () => {
     const errors = {

@@ -1,8 +1,9 @@
 import { AxiosInstance } from 'axios';
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 
 import FormContext from '../context/FormContext';
 import FormClass, { FormState } from '../form/Form';
+import { deepCopy } from '../utils';
 
 export type Form<Data extends Record<string, any> = Record<string, any>> =
   FormClass<Data> & Data & Omit<FormState<Data>, 'data'> & { dirty: boolean };
@@ -24,9 +25,11 @@ export const useForm = <Data extends Record<string, any> = Record<string, any>>(
     progress: undefined,
   });
 
+  const originalData = useRef(deepCopy<Data>(data));
+
   const errorsState = useState({});
 
-  const form = new FormClass(formState, errorsState);
+  const form = new FormClass(formState, originalData, errorsState);
 
   // eslint-disable-next-line no-undef
   return new Proxy(form, {
