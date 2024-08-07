@@ -1,12 +1,12 @@
 [![CI](https://github.com/alfonsobries/react-use-form/actions/workflows/test.yaml/badge.svg)](https://github.com/alfonsobries/react-use-form/actions/workflows/test.yaml)
 
-# React-use-form:
+# React-use-form
 
 React hook for handling form states, requests, and validation, compatible with React and React Native.
 
 - ✅ Simple and intuitive API
 - ✅ 100% Test coverage
-- ✅ Strong typed with Typescript
+- ✅ Strongly typed with TypeScript
 - ✅ Ready for Laravel validation responses
 - ✅ Error handling
 
@@ -30,7 +30,7 @@ yarn add @alfonsobries/react-use-form
 import useForm from '@alfonsobries/react-use-form';
 ```
 
-2. Initialize your form by passing the form state to the hook function. You can use the form.attributes directly to read the state and use the form API to manage the values and the errors.
+2. Initialize your form by passing the form state to the hook function. You can use the form attributes directly to read the state and use the form API to manage the values and the errors.
 
 ```jsx
 function MyComponent() {
@@ -115,9 +115,11 @@ const instance = axios.create({
 });
 
 function App() {
-  <FormContext.Provider value={instance}>
-    <ChildComponent />
-  </FormContext.Provider>;
+  return (
+    <FormContext.Provider value={instance}>
+      <ChildComponent />
+    </FormContext.Provider>
+  );
 }
 ```
 
@@ -147,6 +149,11 @@ form.errors: Errors
  * The upload progress object.
  */
 form.progress: { total: number, loaded: number, percentage: number } | undefined
+
+/**
+ * Indicates if the form data has been modified from its original state.
+ */
+form.dirty: boolean
 
 /**
  * Set the value for the attribute
@@ -233,7 +240,7 @@ form.errors.set(field: string, message: string)
 
 ## Examples
 
-### React Form (with Typescript)
+### React Form (with TypeScript)
 
 ```tsx
 import React, { FormEventHandler } from 'react';
@@ -307,7 +314,7 @@ function LoginForm() {
 export default LoginForm;
 ```
 
-### React Form (non typed)
+### React Form (non-typed)
 
 ```jsx
 import React from 'react';
@@ -380,4 +387,4 @@ export default LoginForm;
 Did I save you a few hours of work? Consider:
 
 - 💵 [Sponsoring my open source work](https://github.com/sponsors/alfonsobries)
-- ⭐ [Nominating me as Github Star](https://stars.github.com/nominate/)
+- ⭐ [Nominating me as a GitHub Star](https://stars.github.com/nominate/)
