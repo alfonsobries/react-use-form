@@ -16,6 +16,7 @@ export interface FormState<Data extends Record<string, any>> {
   successful: boolean;
   progress: Progress | undefined;
 }
+
 export interface Progress {
   total: number;
   loaded: number;
@@ -83,6 +84,12 @@ class Form<Data extends Record<string, any>> {
 
   reset(): void {
     this.setState('data', this.originalData);
+  }
+
+  isDirty(): boolean {
+    return !this.keys().every((key) => {
+      return this.getField(key) === this.originalData[key];
+    });
   }
 
   /**

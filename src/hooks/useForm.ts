@@ -5,7 +5,7 @@ import FormContext from '../context/FormContext';
 import FormClass, { FormState } from '../form/Form';
 
 export type Form<Data extends Record<string, any> = Record<string, any>> =
-  FormClass<Data> & Data & Omit<FormState<Data>, 'data'>;
+  FormClass<Data> & Data & Omit<FormState<Data>, 'data'> & { dirty: boolean };
 
 export const useForm = <Data extends Record<string, any> = Record<string, any>>(
   data: Data,
@@ -25,6 +25,7 @@ export const useForm = <Data extends Record<string, any> = Record<string, any>>(
   });
 
   const errorsState = useState({});
+
   const form = new FormClass(formState, errorsState);
 
   // eslint-disable-next-line no-undef
@@ -36,6 +37,10 @@ export const useForm = <Data extends Record<string, any> = Record<string, any>>(
 
       if (['progress', 'busy', 'successful'].includes(attribute)) {
         return form.formState[0][attribute as 'progress' | 'busy' | 'successful'];
+      }
+
+      if (attribute === 'dirty') {
+        return form.isDirty();
       }
 
       return (form as any)[attribute];
