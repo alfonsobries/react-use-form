@@ -5,9 +5,9 @@ import axios, {
   AxiosResponse,
   Method,
 } from 'axios';
-import React, { MutableRefObject, Ref } from 'react';
+import React, { MutableRefObject } from 'react';
 
-import { deepCompare, deepCopy, hasFiles } from '../utils';
+import { deepCompare, hasFiles } from '../utils';
 import Errors from './Errors';
 
 export interface FormState<Data extends Record<string, any>> {
