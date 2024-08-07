@@ -7,7 +7,7 @@ import axios, {
 } from 'axios';
 import React, { MutableRefObject, Ref } from 'react';
 
-import { deepCopy, hasFiles } from '../utils';
+import { deepCompare, deepCopy, hasFiles } from '../utils';
 import Errors from './Errors';
 
 export interface FormState<Data extends Record<string, any>> {
@@ -88,9 +88,7 @@ class Form<Data extends Record<string, any>> {
   }
 
   isDirty(): boolean {
-    return !this.keys().every(
-      (key) => this.getField(key) === this.originalData.current[key],
-    );
+    return !deepCompare(this.formState[0].data, this.originalData.current);
   }
 
   /**

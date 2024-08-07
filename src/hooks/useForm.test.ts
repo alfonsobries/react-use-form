@@ -139,6 +139,222 @@ describe('useForm', () => {
     expect(result.current.dirty).toBe(false);
   });
 
+  describe('dirty state with complex data', () => {
+    it('should be dirty if an object field is changed', () => {
+      const initialData = {
+        user: {
+          name: 'Alfonso',
+          email: 'alfonso@vexilo.com',
+        },
+        rememberMe: false,
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('user', {
+          ...initialData.user,
+          name: 'Saida',
+        });
+      });
+
+      expect(result.current.dirty).toBe(true);
+    });
+
+    it('should be dirty if an array field is changed', () => {
+      const initialData = {
+        tags: ['javascript', 'typescript'],
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('tags', ['javascript', 'typescript', 'react']);
+      });
+
+      expect(result.current.dirty).toBe(true);
+    });
+
+    it('should be dirty if a nested object field is changed', () => {
+      const initialData = {
+        user: {
+          profile: {
+            firstName: 'Alfonso',
+            lastName: 'Bries',
+          },
+        },
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('user', {
+          profile: {
+            ...initialData.user.profile,
+            lastName: 'Saida',
+          },
+        });
+      });
+
+      expect(result.current.dirty).toBe(true);
+    });
+
+    it('should be dirty if an array of objects is changed', () => {
+      const initialData = {
+        posts: [
+          { id: 1, title: 'Post 1' },
+          { id: 2, title: 'Post 2' },
+        ],
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('posts', [...initialData.posts, { id: 3, title: 'Post 3' }]);
+      });
+
+      expect(result.current.dirty).toBe(true);
+    });
+
+    it('should be dirty if a complex combination of objects and arrays is changed', () => {
+      const initialData = {
+        user: {
+          name: 'Alfonso',
+          posts: [
+            { id: 1, title: 'Post 1' },
+            { id: 2, title: 'Post 2' },
+          ],
+        },
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('user', {
+          ...initialData.user,
+          posts: [...initialData.user.posts, { id: 3, title: 'Post 3' }],
+        });
+      });
+
+      expect(result.current.dirty).toBe(true);
+    });
+  });
+
+  describe('clean state with complex data', () => {
+    it('should not be dirty if an object field is not changed', () => {
+      const initialData = {
+        user: {
+          name: 'Alfonso',
+          email: 'alfonso@vexilo.com',
+        },
+        rememberMe: false,
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('user', { ...initialData.user });
+      });
+
+      expect(result.current.dirty).toBe(false);
+    });
+
+    it('should not be dirty if an array field is not changed', () => {
+      const initialData = {
+        tags: ['javascript', 'typescript'],
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('tags', [...initialData.tags]);
+      });
+
+      expect(result.current.dirty).toBe(false);
+    });
+
+    it('should not be dirty if a nested object field is not changed', () => {
+      const initialData = {
+        user: {
+          profile: {
+            firstName: 'Alfonso',
+            lastName: 'Bries',
+          },
+        },
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('user', {
+          profile: { ...initialData.user.profile },
+        });
+      });
+
+      expect(result.current.dirty).toBe(false);
+    });
+
+    it('should not be dirty if an array of objects is not changed', () => {
+      const initialData = {
+        posts: [
+          { id: 1, title: 'Post 1' },
+          { id: 2, title: 'Post 2' },
+        ],
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('posts', [...initialData.posts]);
+      });
+
+      expect(result.current.dirty).toBe(false);
+    });
+
+    it('should not be dirty if a complex combination of objects and arrays is not changed', () => {
+      const initialData = {
+        user: {
+          name: 'Alfonso',
+          posts: [
+            { id: 1, title: 'Post 1' },
+            { id: 2, title: 'Post 2' },
+          ],
+        },
+      };
+
+      const { result } = renderHook(() => useForm(initialData));
+
+      expect(result.current.dirty).toBe(false);
+
+      act(() => {
+        result.current.set('user', {
+          ...initialData.user,
+          posts: [...initialData.user.posts],
+        });
+      });
+
+      expect(result.current.dirty).toBe(false);
+    });
+  });
+
   describe('Errors', () => {
     const errors = {
       name: ['Name is required'],
