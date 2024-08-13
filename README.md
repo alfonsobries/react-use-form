@@ -123,6 +123,25 @@ function App() {
 }
 ```
 
+## Request Configuration `^0.3.1`
+
+The `RequestConfig` interface allows you to customize how the form request is made. This interface has two optional properties:
+
+- `requestConfig`: This is an object of type `AxiosRequestConfig` and allows you to pass any configuration options directly to the Axios request, such as headers, parameters, or timeout settings.
+- `keepBusyOnSuccess`: This boolean flag, when set to `true`, keeps the form in a busy state even after a successful request. This can be useful in scenarios where you want to prevent user interaction until a follow-up action is completed.
+
+Example usage:
+
+```ts
+form.post('/submit', {
+  requestConfig: {
+    headers: { 'Authorization': 'Bearer my-token' },
+    timeout: 5000,
+  },
+  keepBusyOnSuccess: true,
+});
+```
+
 ## API
 
 ### Form API
