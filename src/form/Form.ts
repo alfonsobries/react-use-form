@@ -113,7 +113,7 @@ class Form<Data extends Record<string, any>> {
   /**
    * Finish processing the form.
    */
-  finishProcessing(options: RequestOptions) {
+  finishProcessing(options?: RequestOptions) {
     this.formState[1]((state) => ({
       ...state,
       busy: options?.keepBusyOnSucess === true ? true : false,
