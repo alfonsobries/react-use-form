@@ -1,6 +1,6 @@
 {
   "name": "@alfonsobries/react-use-form",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "React hook for handling Laravel form requests and validation (for React & React Native)",
   "keywords": [
     "react",
