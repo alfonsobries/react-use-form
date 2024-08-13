@@ -24,6 +24,10 @@ export interface Progress {
   percentage: number;
 }
 
+export interface RequestOptions {
+  keepBusyOnSucess?: boolean;
+}
+
 class Form<Data extends Record<string, any>> {
   originalData: MutableRefObject<Data>;
 
@@ -109,10 +113,10 @@ class Form<Data extends Record<string, any>> {
   /**
    * Finish processing the form.
    */
-  finishProcessing() {
+  finishProcessing(options: RequestOptions) {
     this.formState[1]((state) => ({
       ...state,
-      busy: false,
+      busy: options?.keepBusyOnSucess === true ? true : false,
       successful: true,
       progress: undefined,
     }));
@@ -121,15 +125,23 @@ class Form<Data extends Record<string, any>> {
   /**
    * Submit the form via a GET request.
    */
-  get<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<T>> {
-    return this.submit<T>('get', url, config);
+  get<T = any>(
+    url: string,
+    config: AxiosRequestConfig = {},
+    options?: RequestOptions,
+  ): Promise<AxiosResponse<T>> {
+    return this.submit<T>('get', url, config, options);
   }
 
   /**
    * Submit the form via a POST request.
    */
-  post<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<T>> {
-    return this.submit<T>('post', url, config);
+  post<T = any>(
+    url: string,
+    config: AxiosRequestConfig = {},
+    options?: RequestOptions,
+  ): Promise<AxiosResponse<T>> {
+    return this.submit<T>('post', url, config, options);
   }
 
   /**
@@ -138,15 +150,20 @@ class Form<Data extends Record<string, any>> {
   patch<T = any>(
     url: string,
     config: AxiosRequestConfig = {},
+    options?: RequestOptions,
   ): Promise<AxiosResponse<T>> {
-    return this.submit<T>('patch', url, config);
+    return this.submit<T>('patch', url, config, options);
   }
 
   /**
    * Submit the form via a PUT request.
    */
-  put<T = any>(url: string, config: AxiosRequestConfig = {}): Promise<AxiosResponse<T>> {
-    return this.submit<T>('put', url, config);
+  put<T = any>(
+    url: string,
+    config: AxiosRequestConfig = {},
+    options?: RequestOptions,
+  ): Promise<AxiosResponse<T>> {
+    return this.submit<T>('put', url, config, options);
   }
 
   /**
@@ -155,14 +172,16 @@ class Form<Data extends Record<string, any>> {
   delete<T = any>(
     url: string,
     config: AxiosRequestConfig = {},
+    options?: RequestOptions,
   ): Promise<AxiosResponse<T>> {
-    return this.submit<T>('delete', url, config);
+    return this.submit<T>('delete', url, config, options);
   }
 
   submit<T = any>(
     method: Method,
     url: string,
     config: AxiosRequestConfig = {},
+    options?: RequestOptions,
   ): Promise<AxiosResponse<T>> {
     this.startProcessing();
 
@@ -189,7 +208,7 @@ class Form<Data extends Record<string, any>> {
       (Form.axios || axios)
         .request(config)
         .then((response: AxiosResponse<T>) => {
-          this.finishProcessing();
+          this.finishProcessing(options);
           resolve(response);
         })
         .catch((error: AxiosError) => {
