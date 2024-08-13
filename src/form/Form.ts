@@ -24,7 +24,8 @@ export interface Progress {
   percentage: number;
 }
 
-export interface RequestOptions {
+export interface RequestConfig {
+  requestConfig?: AxiosRequestConfig;
   keepBusyOnSucess?: boolean;
 }
 
@@ -113,10 +114,10 @@ class Form<Data extends Record<string, any>> {
   /**
    * Finish processing the form.
    */
-  finishProcessing(options?: RequestOptions) {
+  finishProcessing(config?: RequestConfig) {
     this.formState[1]((state) => ({
       ...state,
-      busy: options?.keepBusyOnSucess === true ? true : false,
+      busy: config?.keepBusyOnSucess === true ? true : false,
       successful: true,
       progress: undefined,
     }));
@@ -125,90 +126,69 @@ class Form<Data extends Record<string, any>> {
   /**
    * Submit the form via a GET request.
    */
-  get<T = any>(
-    url: string,
-    config: AxiosRequestConfig = {},
-    options?: RequestOptions,
-  ): Promise<AxiosResponse<T>> {
-    return this.submit<T>('get', url, config, options);
+  get<T = any>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
+    return this.submit<T>('get', url, config);
   }
 
   /**
    * Submit the form via a POST request.
    */
-  post<T = any>(
-    url: string,
-    config: AxiosRequestConfig = {},
-    options?: RequestOptions,
-  ): Promise<AxiosResponse<T>> {
-    return this.submit<T>('post', url, config, options);
+  post<T = any>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
+    return this.submit<T>('post', url, config);
   }
 
   /**
    * Submit the form via a PATCH request.
    */
-  patch<T = any>(
-    url: string,
-    config: AxiosRequestConfig = {},
-    options?: RequestOptions,
-  ): Promise<AxiosResponse<T>> {
-    return this.submit<T>('patch', url, config, options);
+  patch<T = any>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
+    return this.submit<T>('patch', url, config);
   }
 
   /**
    * Submit the form via a PUT request.
    */
-  put<T = any>(
-    url: string,
-    config: AxiosRequestConfig = {},
-    options?: RequestOptions,
-  ): Promise<AxiosResponse<T>> {
-    return this.submit<T>('put', url, config, options);
+  put<T = any>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
+    return this.submit<T>('put', url, config);
   }
 
   /**
    * Submit the form via a DELETE request.
    */
-  delete<T = any>(
-    url: string,
-    config: AxiosRequestConfig = {},
-    options?: RequestOptions,
-  ): Promise<AxiosResponse<T>> {
-    return this.submit<T>('delete', url, config, options);
+  delete<T = any>(url: string, config?: RequestConfig): Promise<AxiosResponse<T>> {
+    return this.submit<T>('delete', url, config);
   }
 
   submit<T = any>(
     method: Method,
     url: string,
-    config: AxiosRequestConfig = {},
-    options?: RequestOptions,
+    config?: RequestConfig,
   ): Promise<AxiosResponse<T>> {
     this.startProcessing();
 
-    config = {
+    const requestConfig = {
       data: {},
       params: {},
       url,
       method,
       onUploadProgress: this.handleUploadProgress.bind(this),
-      ...config,
+      ...(config?.requestConfig ?? {}),
     };
 
     if (method.toLowerCase() === 'get') {
-      config.params = { ...this.data(), ...config.params };
+      requestConfig.params = { ...this.data(), ...requestConfig.params };
     } else {
-      config.data = { ...this.data(), ...config.data };
+      requestConfig.data = { ...this.data(), ...requestConfig.data };
 
-      if (hasFiles(config.data) && !config.transformRequest) {
-        config.transformRequest = [(data) => this.toFormData(data)];
+      if (hasFiles(requestConfig.data) && !requestConfig.transformRequest) {
+        requestConfig.transformRequest = [(data) => this.toFormData(data)];
       }
     }
 
     return new Promise<AxiosResponse<T>>((resolve, reject) => {
       (Form.axios || axios)
-        .request(config)
+        .request(requestConfig)
         .then((response: AxiosResponse<T>) => {
-          this.finishProcessing(options);
+          this.finishProcessing(config);
           resolve(response);
         })
         .catch((error: AxiosError) => {

@@ -567,8 +567,10 @@ describe('useForm', () => {
       } = renderHook(() => useForm(data));
 
       const response = await form.submit('get', apiBase, {
-        params: {
-          foo: 'bar',
+        requestConfig: {
+          params: {
+            foo: 'bar',
+          },
         },
       });
 
@@ -588,8 +590,10 @@ describe('useForm', () => {
       } = renderHook(() => useForm(data));
 
       const response = await form.submit('POST', apiBase, {
-        data: {
-          foo: 'bar',
+        requestConfig: {
+          data: {
+            foo: 'bar',
+          },
         },
       });
 
