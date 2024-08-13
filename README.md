@@ -135,7 +135,7 @@ Example usage:
 ```ts
 form.post('/submit', {
   requestConfig: {
-    headers: { 'Authorization': 'Bearer my-token' },
+    headers: { Authorization: 'Bearer my-token' },
     timeout: 5000,
   },
   keepBusyOnSuccess: true,
