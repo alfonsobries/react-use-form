@@ -65,10 +65,13 @@ class Form<Data extends Record<string, any>> {
   }
 
   set(key: string, value: any): void {
-    this.setState('data', {
-      ...this.formState[0]['data'],
-      [key]: value,
-    });
+    this.formState[1]((state) => ({
+      ...state,
+      data: {
+        ...state.data,
+        [key]: value,
+      },
+    }));
   }
 
   keys(): string[] {
@@ -76,10 +79,13 @@ class Form<Data extends Record<string, any>> {
   }
 
   fill(data: Partial<Data> = {}) {
-    this.setState('data', {
-      ...this.formState[0]['data'],
-      ...data,
-    } as Data);
+    this.formState[1]((state) => ({
+      ...state,
+      data: {
+        ...state.data,
+        ...data,
+      } as Data,
+    }));
   }
 
   data(): Data {
@@ -90,7 +96,10 @@ class Form<Data extends Record<string, any>> {
   }
 
   reset(): void {
-    this.setState('data', this.originalData.current);
+    this.formState[1]((state) => ({
+      ...state,
+      data: this.originalData.current,
+    }));
   }
 
   isDirty(): boolean {

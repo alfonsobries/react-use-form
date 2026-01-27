@@ -71,6 +71,40 @@ describe('useForm', () => {
     expect(result.current.email).toBe('alfonso@vexilo.com');
   });
 
+  it('handles multiple simultaneous set calls (autofill scenario)', () => {
+    const { result } = renderHook(() => useForm(data));
+
+    // Simulate autofill triggering multiple set calls in the same event loop
+    act(() => {
+      result.current.set('password', 'newpassword123');
+      result.current.set('name', 'NewName');
+    });
+
+    // Both values should be updated correctly
+    expect(result.current.password).toBe('newpassword123');
+    expect(result.current.name).toBe('NewName');
+    // Other values should remain unchanged
+    expect(result.current.email).toBe('alfonso@vexilo.com');
+  });
+
+  it('handles rapid successive set calls without losing data', () => {
+    const { result } = renderHook(() => useForm({
+      field1: '',
+      field2: '',
+      field3: '',
+    }));
+
+    act(() => {
+      result.current.set('field1', 'value1');
+      result.current.set('field2', 'value2');
+      result.current.set('field3', 'value3');
+    });
+
+    expect(result.current.field1).toBe('value1');
+    expect(result.current.field2).toBe('value2');
+    expect(result.current.field3).toBe('value3');
+  });
+
   it('fills the form data', () => {
     const { result } = renderHook(() => useForm(data));
     const dataToFill = {
