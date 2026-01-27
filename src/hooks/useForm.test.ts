@@ -88,11 +88,13 @@ describe('useForm', () => {
   });
 
   it('handles rapid successive set calls without losing data', () => {
-    const { result } = renderHook(() => useForm({
-      field1: '',
-      field2: '',
-      field3: '',
-    }));
+    const { result } = renderHook(() =>
+      useForm({
+        field1: '',
+        field2: '',
+        field3: '',
+      }),
+    );
 
     act(() => {
       result.current.set('field1', 'value1');
